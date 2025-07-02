@@ -189,6 +189,9 @@ export default {
         this.modal = false;
       } catch (error) {
         console.error(error);
+        if (error?.response?._data?.errors) {
+          this.errors = error.response._data.errors;
+        }
       } finally {
         this.submitLoading = false;
       }

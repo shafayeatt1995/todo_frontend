@@ -1,6 +1,6 @@
 <template>
   <Head>
-    <Title>Login - ISP Billing</Title>
+    <Title>Login - Complain </Title>
   </Head>
   <div
     class="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10"
@@ -68,8 +68,8 @@ export default {
   data() {
     return {
       form: {
-        id: "bibong",
-        password: "bibong0011",
+        id: "",
+        password: "",
       },
       errors: {},
     };
