@@ -162,7 +162,7 @@
                     >
                       Make Cancelled
                     </DropdownMenuItem>
-                    <DropdownMenuItem @click="deleteTodo(item)">
+                    <DropdownMenuItem @click="deleteTodo(item)" v-if="isOwner">
                       Delete
                     </DropdownMenuItem>
                   </DropdownMenuContent>
@@ -463,9 +463,14 @@ export default {
       this.todo.item = todo;
       this.todo.modal = true;
     },
-    deleteTodo(todo) {
-      this.$api.delete(`/dashboard/todo/delete/${todo._id}`);
-      this.fetchItems();
+    async deleteTodo(todo) {
+      try {
+        if (!confirm(`Are you sure you want to delete this complain?`)) return;
+        await this.$api.post(`/dashboard/todo/delete`, { todo });
+        this.fetchItems();
+      } catch (error) {
+        console.error(error);
+      }
     },
     async updateStatus(status, i) {
       try {
