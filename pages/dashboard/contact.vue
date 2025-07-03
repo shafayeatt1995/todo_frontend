@@ -18,7 +18,7 @@
           class="py-2 flex justify-between items-center"
         >
           <p class="cursor-pointer flex-1" @click="show(i)">
-            ({{ item.id }}) {{ item.name }}
+            {{ item.id }}. {{ item.name }} ({{ item.phone }})
           </p>
           <DropdownMenu>
             <DropdownMenuTrigger as-child>
@@ -42,7 +42,7 @@
               <DropdownMenuItem>
                 <a :href="`tel:${item.phone}`" class="flex gap-2 items-center">
                   <PhoneCallIcon />
-                  <span>Call {{ item.phone }}</span>
+                  <span>Call</span>
                 </a>
               </DropdownMenuItem>
               <DropdownMenuItem @click="deleteContact(i)" v-if="isOwner">
