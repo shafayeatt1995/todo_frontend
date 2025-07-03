@@ -47,7 +47,7 @@ export default {
     checkRoute(route) {
       const { name } = this.$route;
       return name === route
-        ? "border-t-2 border-sky-500"
+        ? "border-t-2 border-black"
         : " border-t-2 border-transparent";
     },
   },
