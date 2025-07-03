@@ -1,5 +1,4 @@
 <template>
-  <Button @click="cleanImage">cleanImage</Button>
   <NuxtPwaManifest />
   <NuxtLayout>
     <NuxtPage />
