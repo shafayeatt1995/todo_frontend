@@ -40,9 +40,9 @@
                 <span>Edit contact</span>
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <a href="tel:{{ item.phone }}" class="flex gap-2 items-center">
+                <a :href="`tel:${item.phone}`" class="flex gap-2 items-center">
                   <PhoneCallIcon />
-                  <span>Call</span>
+                  <span>Call {{ item.phone }}</span>
                 </a>
               </DropdownMenuItem>
               <DropdownMenuItem @click="deleteContact(i)" v-if="isOwner">
@@ -125,7 +125,7 @@
           <p>Name: {{ selectItem.name }}</p>
           <p class="flex gap-2 items-center">
             Phone: {{ selectItem.phone }}
-            <a href="tel:{{ selectItem.phone }}"><PhoneCallIcon /></a>
+            <a :href="`tel:${selectItem.phone}`"><PhoneCallIcon /></a>
           </p>
           <p>
             Package: {{ selectItem.package?.name }}({{
