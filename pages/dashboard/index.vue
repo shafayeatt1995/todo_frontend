@@ -89,6 +89,22 @@
             </div>
           </div>
         </div>
+        <div
+          v-if="items.length === 0 && !loading"
+          class="w-full flex justify-center flex-col items-center py-20"
+        >
+          <BookOpenIcon :size="50" />
+          <p>No data found</p>
+        </div>
+      </div>
+      <div class="flex justify-between items-center mt-5">
+        <Button @click="changePage(-1)" :disabled="page === 1">
+          <ChevronLeft /> Previous
+        </Button>
+        <Button @click="changePage(1)" :disabled="items.length !== perPage">
+          Next
+          <ChevronRight />
+        </Button>
       </div>
     </div>
   </LayoutDashboard>
@@ -184,8 +200,10 @@ import {
   ImagePlus,
   XIcon,
   MoreHorizontal,
+  ChevronRight,
+  ChevronLeft,
+  BookOpenIcon,
 } from "lucide-vue-next";
-import Skeleton from "../../components/ui/skeleton/Skeleton.vue";
 
 export default {
   name: "Dashboard",
@@ -197,6 +215,9 @@ export default {
     ImagePlus,
     XIcon,
     MoreHorizontal,
+    ChevronRight,
+    ChevronLeft,
+    BookOpenIcon,
   },
   data() {
     return {
@@ -225,7 +246,7 @@ export default {
       return authUser.value;
     },
     page() {
-      return this.$route.query.page || 1;
+      return +this.$route.query.page || 1;
     },
     proUser() {
       return this.authUser?.proUser || false;
@@ -242,6 +263,9 @@ export default {
   watch: {
     modal(val) {
       if (!val) this.reset();
+    },
+    page() {
+      this.fetchItems();
     },
   },
   mounted() {
@@ -371,6 +395,15 @@ export default {
       } catch (error) {
         console.error(error);
       }
+    },
+    changePage(page) {
+      if (page === -1 && this.page === 1) return;
+      if (page === 1 && this.page === this.totalPages) return;
+      this.$router.push({
+        query: {
+          page: +this.page + page,
+        },
+      });
     },
   },
 };
