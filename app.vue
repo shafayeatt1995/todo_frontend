@@ -3,7 +3,7 @@
   <NuxtLayout>
     <NuxtPage />
   </NuxtLayout>
-  <Toaster />
+  <Toaster richColors />
 </template>
 
 <script>

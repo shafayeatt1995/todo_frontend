@@ -35,6 +35,10 @@
                 <BookOpenTextIcon />
                 <span>Create complain</span>
               </DropdownMenuItem>
+              <DropdownMenuItem @click="copyID(item.id)">
+                <CopyIcon />
+                <span>Copy ID</span>
+              </DropdownMenuItem>
               <DropdownMenuItem @click="editContact(i)">
                 <SquarePenIcon />
                 <span>Edit contact</span>
@@ -121,7 +125,13 @@
           <DialogTitle>Contact Details</DialogTitle>
         </DialogHeader>
         <div class="space-y-2">
-          <p>ID: {{ selectItem.id }}</p>
+          <p class="flex gap-2 items-center">
+            <span> ID: {{ selectItem.id }} </span>
+            <Button variant="ghost" @click="copyID(selectItem.id)">
+              <CopyIcon />
+              <span>Copy ID</span>
+            </Button>
+          </p>
           <p>Name: {{ selectItem.name }}</p>
           <p class="flex gap-2 items-center">
             Phone: {{ selectItem.phone }}
@@ -211,7 +221,9 @@ import {
   BookOpenTextIcon,
   ImagePlus,
   XIcon,
+  CopyIcon,
 } from "lucide-vue-next";
+import { toast } from "vue-sonner";
 
 export default {
   name: "Contact",
@@ -226,6 +238,7 @@ export default {
     Trash2Icon,
     ImagePlus,
     XIcon,
+    CopyIcon,
   },
   data() {
     return {
@@ -402,6 +415,14 @@ export default {
         }
       } finally {
         this.submitLoading = false;
+      }
+    },
+    copyID(id) {
+      try {
+        navigator.clipboard.writeText(id);
+        toast.success("ID copied to clipboard");
+      } catch (error) {
+        console.error(error);
       }
     },
   },
