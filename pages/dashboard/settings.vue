@@ -23,12 +23,12 @@
 </template>
 
 <script>
-import { BellIcon } from "lucide-vue-next";
+import { BellIcon, Loader2Icon } from "lucide-vue-next";
 import { toast } from "vue-sonner";
 
 export default {
   name: "ConnectNotification",
-  components: { BellIcon },
+  components: { BellIcon, Loader2Icon },
   data() {
     return {
       connectLoading: false,
