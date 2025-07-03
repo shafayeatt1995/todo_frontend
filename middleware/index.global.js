@@ -2,7 +2,7 @@ export default defineNuxtRouteMiddleware(async (to, _from) => {
   const { path } = to;
   const guest = ["/"];
   const authExactUrls = [];
-  const authStartsWithRoutes = ["/dashboard"];
+  const authStartsWithRoutes = ["/admin", "/dashboard"];
 
   const { fetchUser, authUser } = useAuth();
   await fetchUser();
@@ -14,11 +14,21 @@ export default defineNuxtRouteMiddleware(async (to, _from) => {
   if (!(isExactRoute || isStartsRoute)) {
     if (guest.includes(path)) {
       if (authUser.value) {
-        return navigateTo("/dashboard");
+        if (authUser.value.isAdmin) {
+          return navigateTo("/admin");
+        } else {
+          return navigateTo("/dashboard");
+        }
       }
     }
   }
   if (isExactRoute || isStartsRoute) {
     if (!authUser.value) return navigateTo("/");
+  }
+  if (path.startsWith("/dashboard") && authUser.value?.isAdmin) {
+    return navigateTo("/admin");
+  }
+  if (path.startsWith("/admin") && !authUser.value?.isAdmin) {
+    return navigateTo("/dashboard");
   }
 });

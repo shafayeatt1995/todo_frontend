@@ -1,8 +1,8 @@
 <template>
   <Head>
-    <Title>Users - Dashboard</Title>
+    <Title>Users - Admin</Title>
   </Head>
-  <Dashboard>
+  <Admin>
     <div class="w-full space-y-2">
       <div class="flex justify-between">
         <h1 class="flex gap-2 items-center text-2xl"><UsersIcon /> Users</h1>
@@ -106,15 +106,6 @@
               <TableHead>
                 <div
                   class="flex gap-2 items-center cursor-pointer"
-                  @click="sort('avatar')"
-                >
-                  <p>Image</p>
-                  <Sort :value="form.sort.avatar" />
-                </div>
-              </TableHead>
-              <TableHead>
-                <div
-                  class="flex gap-2 items-center cursor-pointer"
                   @click="sort('name')"
                 >
                   <p>Name</p>
@@ -128,15 +119,6 @@
                 >
                   <p>User ID</p>
                   <Sort :value="form.sort.id" />
-                </div>
-              </TableHead>
-              <TableHead>
-                <div
-                  class="flex gap-2 items-center cursor-pointer"
-                  @click="sort('mobile')"
-                >
-                  <p>Mobile</p>
-                  <Sort :value="form.sort.mobile" />
                 </div>
               </TableHead>
               <TableHead>
@@ -231,21 +213,11 @@
               </TableCell>
               <TableCell>
                 <Skeleton class="w-full h-5 rounded-full" v-if="loading" />
-                <span v-else
-                  ><img :src="user.avatar" class="max-w-10 max-h-10"
-                /></span>
-              </TableCell>
-              <TableCell>
-                <Skeleton class="w-full h-5 rounded-full" v-if="loading" />
                 <span v-else>{{ user.name }}</span>
               </TableCell>
               <TableCell>
                 <Skeleton class="w-full h-5 rounded-full" v-if="loading" />
                 <span v-else>{{ user.id }}</span>
-              </TableCell>
-              <TableCell>
-                <Skeleton class="w-full h-5 rounded-full" v-if="loading" />
-                <span v-else>{{ user.mobile }}</span>
               </TableCell>
               <TableCell>
                 <Skeleton class="w-full h-5 rounded-full" v-if="loading" />
@@ -289,17 +261,6 @@
                       <span
                         >{{ user.suspended ? "Active" : "Suspend" }} user</span
                       >
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      @click="setPermission(i)"
-                      v-if="user.type !== 'owner'"
-                    >
-                      <UserLockIcon />
-                      <span>Permission</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem v-if="isOwner" @click="setPackage(i)">
-                      <DollarSignIcon />
-                      <span>Set Package</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem @click="deleteUser(i)">
                       <Trash2Icon />
@@ -348,11 +309,6 @@
             <ErrorMessage name="password" :error="errors" />
           </div>
           <div class="space-y-1">
-            <Label for="mobile"> Mobile </Label>
-            <Input id="mobile" v-model="inputForm.mobile" />
-            <ErrorMessage name="mobile" :error="errors" />
-          </div>
-          <div class="space-y-1" v-if="!editMode">
             <Label for="type"> Type </Label>
             <Select v-model="inputForm.type">
               <SelectTrigger class="w-full">
@@ -360,8 +316,10 @@
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectItem value="reseller">Reseller</SelectItem>
+                  <SelectItem value="admin">Admin</SelectItem>
                   <SelectItem value="owner">Business Owner</SelectItem>
+                  <SelectItem value="staff">Staff</SelectItem>
+                  <SelectItem value="user">User</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -376,160 +334,7 @@
         </DialogFooter>
       </DialogScrollContent>
     </Dialog>
-    <Dialog v-model:open="permissionModal">
-      <DialogScrollContent>
-        <DialogHeader>
-          <DialogTitle>Permission</DialogTitle>
-        </DialogHeader>
-        <div class="space-y-3">
-          <table
-            class="table-auto border-[3px] border-black dark:border-white w-full"
-          >
-            <thead>
-              <tr>
-                <th
-                  class="border border-black dark:border-white px-4 py-2 text-center align-middle"
-                >
-                  Group
-                </th>
-                <th
-                  class="border border-black dark:border-white px-4 py-2 text-center align-middle"
-                >
-                  Permission
-                </th>
-                <th
-                  class="border border-black dark:border-white px-4 py-2 text-center align-middle"
-                >
-                  Status
-                </th>
-              </tr>
-            </thead>
-            <tbody
-              v-for="(group, i) in permissions"
-              :key="i"
-              class="border-[3px] border-black dark:border-white"
-            >
-              <tr v-for="(option, index) in group.options" :key="option.value">
-                <td
-                  v-if="index === 0"
-                  :rowspan="group.options.length"
-                  class="border border-black dark:border-white px-4 py-2 font-bold text-center align-middle"
-                >
-                  {{ group.name }}
-                </td>
-                <td
-                  class="border border-black dark:border-white px-4 py-2 text-center align-middle"
-                >
-                  {{ option.name }}
-                </td>
-                <td
-                  class="border border-black dark:border-white px-4 py-2 text-center align-middle"
-                >
-                  <Switch
-                    :modelValue="checkPermission(option.value)"
-                    @update:modelValue="togglePermission(option.value)"
-                  />
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <DialogFooter>
-          <Button
-            type="button"
-            @click="updatePermission"
-            :disabled="submitLoading"
-          >
-            <Loader2Icon v-if="submitLoading" class="animate-spin" />
-            Update permission
-          </Button>
-        </DialogFooter>
-      </DialogScrollContent>
-    </Dialog>
-    <Dialog v-model:open="package.modal">
-      <DialogScrollContent class="max-w-2xl">
-        <DialogHeader>
-          <DialogTitle> Set Package</DialogTitle>
-        </DialogHeader>
-        <div>
-          <div class="border rounded-md max-h-64 overflow-y-auto">
-            <div class="rounded-md border">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>
-                      <p>Name</p>
-                    </TableHead>
-                    <TableHead>
-                      <p>Price</p>
-                    </TableHead>
-                    <TableHead>
-                      <p>vatAmount</p>
-                    </TableHead>
-                    <TableHead>
-                      <p>vatPercent</p>
-                    </TableHead>
-                    <TableHead>
-                      <p>Action</p>
-                    </TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  <TableRow
-                    v-for="(pack, i) in package.loading ? 10 : package.items"
-                    :key="i"
-                  >
-                    <TableCell>
-                      <Skeleton
-                        class="w-full h-5 rounded-full"
-                        v-if="package.loading"
-                      />
-                      <span v-else>{{ pack.name }}</span>
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton
-                        class="w-full h-5 rounded-full"
-                        v-if="package.loading"
-                      />
-                      <span v-else>{{ pack.price }}</span>
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton
-                        class="w-full h-5 rounded-full"
-                        v-if="loading"
-                      />
-                      <span v-else>{{ pack.vatType }}</span>
-                    </TableCell>
-                  </TableRow>
-
-                  <TableRow v-if="!loading && items.length === 0">
-                    <TableCell :colspan="10" class="h-24 text-center">
-                      <div
-                        class="flex flex-col items-center justify-center py-10"
-                      >
-                        <BookOpenIcon :size="50" />
-                        <p class="">No results found.</p>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </div>
-          </div>
-        </div>
-        <DialogFooter>
-          <Button
-            type="button"
-            @click="updatePermission"
-            :disabled="submitLoading"
-          >
-            <Loader2Icon v-if="submitLoading" class="animate-spin" />
-            Update Package
-          </Button>
-        </DialogFooter>
-      </DialogScrollContent>
-    </Dialog>
-  </Dashboard>
+  </Admin>
 </template>
 
 <script>
@@ -545,10 +350,7 @@ import {
   ChevronDownIcon,
   ChevronUpIcon,
   Loader2Icon,
-  UserLockIcon,
-  DollarSignIcon,
 } from "lucide-vue-next";
-import TableHead from "../../components/ui/table/TableHead.vue";
 
 export default {
   name: "User",
@@ -565,9 +367,6 @@ export default {
     ChevronDownIcon,
     ChevronUpIcon,
     Loader2Icon,
-    UserLockIcon,
-    DollarSignIcon,
-    TableHead,
   },
   data() {
     return {
@@ -593,33 +392,15 @@ export default {
         name: "",
         id: "",
         password: "",
-        mobile: "",
-        type: "reseller",
+        type: "user",
       },
       submitLoading: false,
-      permissionModal: false,
-      userPermission: null,
-      package: {
-        user: {},
-        items: [],
-        loading: false,
-        loaded: false,
-        modal: false,
-      },
     };
   },
   computed: {
     authUser() {
       const { authUser } = useAuth();
       return authUser.value;
-    },
-    permissions() {
-      const { permissions } = usePermission();
-      return permissions.value;
-    },
-    isOwner() {
-      const { isOwner } = usePermission();
-      return isOwner.value;
     },
   },
   watch: {
@@ -657,11 +438,6 @@ export default {
       },
       deep: true,
     },
-    permissionModal(val) {
-      if (!val) {
-        this.userPermission = null;
-      }
-    },
   },
   mounted() {
     this.form.page = +this.$route.query.page || 1;
@@ -675,7 +451,7 @@ export default {
         this.loading = true;
         this.selectedItems = [];
         const { users, total } = await this.$api.post(
-          "/dashboard/user/fetch",
+          "/admin/user/fetch",
           this.form
         );
         this.items = users;
@@ -701,7 +477,7 @@ export default {
           )
         )
           return;
-        await this.$api.post("/dashboard/user/toggle-suspend", { user });
+        await this.$api.post("/admin/user/toggle-suspend", { user });
         this.items[i].suspended = !this.items[i].suspended;
       } catch (error) {
         console.error(error);
@@ -717,7 +493,7 @@ export default {
           )
         )
           return;
-        await this.$api.post("/dashboard/user/batch-toggle-suspend", {
+        await this.$api.post("/admin/user/batch-toggle-suspend", {
           ids: this.selectedItems,
           suspend,
         });
@@ -753,7 +529,7 @@ export default {
     async batchDelete() {
       try {
         if (!confirm(`Are you sure you want to delete selected users?`)) return;
-        await this.$api.post("/dashboard/user/batch-delete", {
+        await this.$api.post("/admin/user/batch-delete", {
           ids: this.selectedItems,
         });
         this.fetchItems();
@@ -764,7 +540,7 @@ export default {
     async deleteUser(i) {
       try {
         if (!confirm(`Are you sure you want to delete this user?`)) return;
-        await this.$api.post("/dashboard/user/delete", { user: this.items[i] });
+        await this.$api.post("/admin/user/delete", { user: this.items[i] });
         this.items.splice(i, 1);
       } catch (error) {
         console.error(error);
@@ -779,10 +555,10 @@ export default {
       try {
         this.submitLoading = true;
         if (this.editMode) {
-          await this.$api.post(`/dashboard/user/edit`, this.inputForm);
+          await this.$api.post(`/admin/user/edit`, this.inputForm);
           this.fetchItems();
         } else {
-          await this.$api.post("/dashboard/user/add", this.inputForm);
+          await this.$api.post("/admin/user/add", this.inputForm);
           this.refetch();
         }
         this.reset();
@@ -797,13 +573,7 @@ export default {
       }
     },
     reset() {
-      this.inputForm = {
-        name: "",
-        id: "",
-        password: "",
-        mobile: "",
-        type: "reseller",
-      };
+      this.inputForm = { name: "", id: "", password: "", type: "user" };
       this.errors = {};
       this.editMode = false;
     },
@@ -818,52 +588,6 @@ export default {
       this.inputForm = { ...user };
       this.editMode = true;
       this.modal = true;
-    },
-    setPermission(i) {
-      this.userPermission = this.items[i];
-      this.permissionModal = true;
-    },
-    togglePermission(val) {
-      if (this.checkPermission(val)) {
-        this.userPermission.permissions =
-          this.userPermission.permissions.filter((v) => v !== val);
-      } else {
-        this.userPermission.permissions.push(val);
-      }
-    },
-    checkPermission(val) {
-      return this.userPermission?.permissions?.includes(val);
-    },
-    async updatePermission() {
-      try {
-        this.submitLoading = true;
-        await this.$api.post("/dashboard/user/update-permission", {
-          user: this.userPermission,
-        });
-        this.permissionModal = false;
-
-        this.fetchItems();
-      } catch (error) {
-        console.error(error);
-      } finally {
-        this.submitLoading = false;
-      }
-    },
-    async setPackage(i) {
-      try {
-        this.package.loading = true;
-        this.package.modal = true;
-        this.package.user = this.items[i];
-
-        if (!this.package.loaded) {
-          const { packages } = await this.$api.get("/dashboard/user/package");
-          this.package.items = packages;
-          this.package.loaded = true;
-        }
-        this.package.loading = false;
-      } catch (error) {
-        console.error(error);
-      }
     },
   },
 };

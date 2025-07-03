@@ -14,9 +14,9 @@ export default {
   name: "App",
   components: { Toaster },
   mounted() {
-    setTimeout(() => {
-      this.cleanImage();
-    }, 3000);
+    // setTimeout(() => {
+    //   this.cleanImage();
+    // }, 3000);
   },
   methods: {
     async cleanImage() {

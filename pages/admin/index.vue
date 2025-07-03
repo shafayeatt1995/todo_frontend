@@ -1,16 +1,12 @@
 <template>
-  <Head>
-    <Title>Dashboard</Title>
-  </Head>
-  <Dashboard>
-    <div>Dashboard</div>
+  <Admin>
     <pre>{{ authUser }}</pre>
-  </Dashboard>
+  </Admin>
 </template>
 
 <script>
 export default {
-  name: "Dashboard",
+  name: "Admin",
   computed: {
     authUser() {
       const { authUser } = useAuth();
