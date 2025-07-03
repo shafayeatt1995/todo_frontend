@@ -106,15 +106,6 @@
               <TableHead>
                 <div
                   class="flex gap-2 items-center cursor-pointer"
-                  @click="sort('id')"
-                >
-                  <p>ID</p>
-                  <Sort :value="form.sort.id" />
-                </div>
-              </TableHead>
-              <TableHead>
-                <div
-                  class="flex gap-2 items-center cursor-pointer"
                   @click="sort('price')"
                 >
                   <p>Price</p>
@@ -128,10 +119,6 @@
               <TableCell>
                 <Skeleton class="w-full h-5 rounded-full" v-if="loading" />
                 <span v-else>{{ pack.name }}</span>
-              </TableCell>
-              <TableCell>
-                <Skeleton class="w-full h-5 rounded-full" v-if="loading" />
-                <span v-else>{{ pack.id }}</span>
               </TableCell>
               <TableCell>
                 <Skeleton class="w-full h-5 rounded-full" v-if="loading" />
@@ -160,7 +147,7 @@
             </TableRow>
 
             <TableRow v-if="!loading && items.length === 0">
-              <TableCell :colspan="4" class="h-24 text-center">
+              <TableCell :colspan="3" class="h-24 text-center">
                 <div class="flex flex-col items-center justify-center py-10">
                   <BookOpenIcon :size="50" />
                   <p class="">No results found.</p>
@@ -181,11 +168,6 @@
             <Label for="name"> Package name </Label>
             <Input id="name" v-model="inputForm.name" />
             <ErrorMessage name="name" :error="errors" />
-          </div>
-          <div class="space-y-1">
-            <Label for="id"> Package ID </Label>
-            <Input id="id" v-model="inputForm.id" />
-            <ErrorMessage name="id" :error="errors" />
           </div>
           <div class="space-y-1">
             <Label for="price"> Price </Label>
@@ -256,7 +238,6 @@ export default {
       modal: false,
       editMode: false,
       inputForm: {
-        id: "",
         name: "",
         price: 0,
       },
@@ -325,46 +306,6 @@ export default {
     },
     updateRoute() {
       this.$router.push({ query: this.form });
-    },
-    toggleCheckbox(pack) {
-      if (this.checkCheckBox(pack)) {
-        this.selectedItems = this.selectedItems.filter((id) => id !== pack._id);
-      } else {
-        this.selectedItems.push(pack._id);
-      }
-    },
-    checkCheckBox(pack) {
-      return this.selectedItems.includes(pack._id);
-    },
-    selectAll() {
-      if (this.selectedItems.length === this.items.length) {
-        this.selectedItems = [];
-      } else {
-        this.selectedItems = this.items.map((pack) => pack._id);
-      }
-    },
-    async batchDelete() {
-      try {
-        if (!confirm(`Are you sure you want to delete selected packages?`))
-          return;
-        await this.$api.post(`/dashboard/package/batch-delete`, {
-          ids: this.selectedItems,
-        });
-        this.fetchItems();
-      } catch (error) {
-        console.error(error);
-      }
-    },
-    async deletePackage(i) {
-      try {
-        if (!confirm(`Are you sure you want to delete this package?`)) return;
-        await this.$api.post(`/dashboard/package/delete`, {
-          pack: this.items[i],
-        });
-        this.items.splice(i, 1);
-      } catch (error) {
-        console.error(error);
-      }
     },
     sort(key) {
       if (!this.form.sort[key]) this.form.sort = {};
