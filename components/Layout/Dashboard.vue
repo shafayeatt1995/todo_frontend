@@ -2,10 +2,7 @@
   <div class="flex h-svh flex-col items-center justify-center">
     <div class="w-full p-2 flex justify-between items-center border shadow">
       <img src="/logo.png" class="max-h-12" />
-      <div class="flex items-center gap-2">
-        <ConnectNotification />
-        <Button @click="logout"><LogOut /> logout</Button>
-      </div>
+      <Button @click="logout"><LogOut /> logout</Button>
     </div>
     <div class="flex-1 w-full overflow-y-auto overflow-x-hidden relative">
       <slot />
@@ -25,6 +22,13 @@
         v-if="authUser.proUser"
       >
         User list
+      </NuxtLink>
+      <NuxtLink
+        to="/dashboard/settings"
+        class="p-4 w-full text-center -mt-[2px]"
+        :class="checkRoute('dashboard-settings')"
+      >
+        Settings
       </NuxtLink>
     </div>
   </div>
