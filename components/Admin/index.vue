@@ -16,8 +16,6 @@
             </Avatar>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
-            <DropdownMenuSeparator />
             <DropdownMenuItem @click="logout">
               <LogOutIcon /> Logout
             </DropdownMenuItem>

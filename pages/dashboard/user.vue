@@ -92,149 +92,14 @@
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead class="w-10">
-                <Skeleton class="w-full h-5 rounded-full" v-if="loading" />
-                <Checkbox
-                  v-else
-                  :modelValue="
-                    selectedItems.length > 0 &&
-                    selectedItems.length === items.length
-                  "
-                  @update:modelValue="selectAll"
-                />
-              </TableHead>
-              <TableHead>
-                <div
-                  class="flex gap-2 items-center cursor-pointer"
-                  @click="sort('avatar')"
-                >
-                  <p>Image</p>
-                  <Sort :value="form.sort.avatar" />
-                </div>
-              </TableHead>
-              <TableHead>
-                <div
-                  class="flex gap-2 items-center cursor-pointer"
-                  @click="sort('name')"
-                >
-                  <p>Name</p>
-                  <Sort :value="form.sort.name" />
-                </div>
-              </TableHead>
-              <TableHead>
-                <div
-                  class="flex gap-2 items-center cursor-pointer"
-                  @click="sort('id')"
-                >
-                  <p>User ID</p>
-                  <Sort :value="form.sort.id" />
-                </div>
-              </TableHead>
-              <TableHead>
-                <div
-                  class="flex gap-2 items-center cursor-pointer"
-                  @click="sort('mobile')"
-                >
-                  <p>Mobile</p>
-                  <Sort :value="form.sort.mobile" />
-                </div>
-              </TableHead>
-              <TableHead>
-                <div
-                  class="flex gap-2 items-center cursor-pointer"
-                  @click="sort('type')"
-                >
-                  <p>Type</p>
-                  <Sort :value="form.sort.type" />
-                </div>
-              </TableHead>
-              <TableHead>
-                <div
-                  class="flex gap-2 items-center cursor-pointer"
-                  @click="sort('suspended')"
-                >
-                  <p>Suspended</p>
-                  <Sort :value="form.sort.suspended" />
-                </div>
-              </TableHead>
-              <TableHead>
-                <div
-                  class="flex gap-2 items-center cursor-pointer"
-                  @click="sort('refName')"
-                >
-                  <p>Created By</p>
-                  <Sort :value="form.sort.refName" />
-                </div>
-              </TableHead>
-              <TableHead>
-                <div
-                  class="flex gap-2 items-center cursor-pointer"
-                  @click="sort('_id')"
-                >
-                  <p>Created At</p>
-                  <Sort :value="form.sort._id" />
-                </div>
-              </TableHead>
-              <TableHead class="w-14">
-                <Skeleton class="w-full h-5 rounded-full" v-if="loading" />
-                <DropdownMenu v-else>
-                  <DropdownMenuTrigger as-child>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      class="hover:bg-transparent size-7 relative"
-                    >
-                      <span
-                        class="absolute -top-1 -right-3 size-5 bg-black dark:bg-white rounded-full text-[10px] text-white dark:text-black flex items-center justify-center"
-                        v-if="selectedItems.length > 0"
-                        >{{ selectedItems.length }}</span
-                      >
-                      <MoreHorizontalIcon />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent class="" align="end">
-                    <DropdownMenuItem
-                      @click="batchToggleSuspend(false)"
-                      :disabled="selectedItems.length === 0"
-                    >
-                      <PlayIcon />
-                      <span>Active users</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      @click="batchToggleSuspend(true)"
-                      :disabled="selectedItems.length === 0"
-                    >
-                      <PauseIcon />
-                      <span>Suspend users</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      @click="batchDelete"
-                      :disabled="selectedItems.length === 0"
-                    >
-                      <Trash2Icon />
-                      <span>Delete users</span>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </TableHead>
+              <TableHead>Name</TableHead>
+              <TableHead>User ID</TableHead>
+              <TableHead>Type</TableHead>
+              <TableHead>Suspended</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             <TableRow v-for="(user, i) in loading ? 10 : items" :key="i">
-              <TableCell class="w-10">
-                <Skeleton class="w-full h-5 rounded-full" v-if="loading" />
-                <Checkbox
-                  v-else
-                  :modelValue="checkCheckBox(user)"
-                  @update:modelValue="toggleCheckbox(user)"
-                />
-              </TableCell>
-              <TableCell>
-                <Skeleton class="w-full h-5 rounded-full" v-if="loading" />
-                <span v-else
-                  ><img :src="user.avatar" class="max-w-10 max-h-10"
-                /></span>
-              </TableCell>
               <TableCell>
                 <Skeleton class="w-full h-5 rounded-full" v-if="loading" />
                 <span v-else>{{ user.name }}</span>
@@ -242,10 +107,6 @@
               <TableCell>
                 <Skeleton class="w-full h-5 rounded-full" v-if="loading" />
                 <span v-else>{{ user.id }}</span>
-              </TableCell>
-              <TableCell>
-                <Skeleton class="w-full h-5 rounded-full" v-if="loading" />
-                <span v-else>{{ user.mobile }}</span>
               </TableCell>
               <TableCell>
                 <Skeleton class="w-full h-5 rounded-full" v-if="loading" />
@@ -257,14 +118,6 @@
                   Suspended
                 </Badge>
                 <Badge v-else>Active</Badge>
-              </TableCell>
-              <TableCell>
-                <Skeleton class="w-full h-5 rounded-full" v-if="loading" />
-                <span v-else>{{ user.refName }}</span>
-              </TableCell>
-              <TableCell>
-                <Skeleton class="w-full h-5 rounded-full" v-if="loading" />
-                <span v-else>{{ $normalDate(user.createdAt) }}</span>
               </TableCell>
               <TableCell class="w-14">
                 <Skeleton class="w-full h-5 rounded-full" v-if="loading" />
@@ -290,28 +143,13 @@
                         >{{ user.suspended ? "Active" : "Suspend" }} user</span
                       >
                     </DropdownMenuItem>
-                    <DropdownMenuItem
-                      @click="setPermission(i)"
-                      v-if="user.type !== 'owner'"
-                    >
-                      <UserLockIcon />
-                      <span>Permission</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem v-if="isOwner" @click="setPackage(i)">
-                      <DollarSignIcon />
-                      <span>Set Package</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem @click="deleteUser(i)">
-                      <Trash2Icon />
-                      <span>Delete user</span>
-                    </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </TableCell>
             </TableRow>
 
             <TableRow v-if="!loading && items.length === 0">
-              <TableCell :colspan="10" class="h-24 text-center">
+              <TableCell :colspan="5" class="h-24 text-center">
                 <div class="flex flex-col items-center justify-center py-10">
                   <BookOpenIcon :size="50" />
                   <p class="">No results found.</p>
@@ -346,26 +184,6 @@
             <Label for="password"> Password (login)</Label>
             <Input id="password" v-model="inputForm.password" />
             <ErrorMessage name="password" :error="errors" />
-          </div>
-          <div class="space-y-1">
-            <Label for="mobile"> Mobile </Label>
-            <Input id="mobile" v-model="inputForm.mobile" />
-            <ErrorMessage name="mobile" :error="errors" />
-          </div>
-          <div class="space-y-1" v-if="!editMode">
-            <Label for="type"> Type </Label>
-            <Select v-model="inputForm.type">
-              <SelectTrigger class="w-full">
-                <SelectValue placeholder="Select type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectItem value="reseller">Reseller</SelectItem>
-                  <SelectItem value="owner">Business Owner</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-            <ErrorMessage name="type" :error="errors" />
           </div>
         </div>
         <DialogFooter>
@@ -593,8 +411,6 @@ export default {
         name: "",
         id: "",
         password: "",
-        mobile: "",
-        type: "reseller",
       },
       submitLoading: false,
       permissionModal: false,
@@ -707,74 +523,6 @@ export default {
         console.error(error);
       }
     },
-    async batchToggleSuspend(suspend) {
-      try {
-        if (
-          !confirm(
-            `Are you sure you want to ${
-              suspend ? "suspend" : "activate"
-            } these users?`
-          )
-        )
-          return;
-        await this.$api.post("/dashboard/user/batch-toggle-suspend", {
-          ids: this.selectedItems,
-          suspend,
-        });
-        this.selectedItems.forEach((id) => {
-          const i = this.items.findIndex(
-            (user) => user._id === id && user._id !== this.authUser._id
-          );
-          if (i !== -1) {
-            this.items[i].suspended = suspend;
-          }
-        });
-      } catch (error) {
-        console.error(error);
-      }
-    },
-    toggleCheckbox(user) {
-      if (this.checkCheckBox(user)) {
-        this.selectedItems = this.selectedItems.filter((id) => id !== user._id);
-      } else {
-        this.selectedItems.push(user._id);
-      }
-    },
-    checkCheckBox(user) {
-      return this.selectedItems.includes(user._id);
-    },
-    selectAll() {
-      if (this.selectedItems.length === this.items.length) {
-        this.selectedItems = [];
-      } else {
-        this.selectedItems = this.items.map((user) => user._id);
-      }
-    },
-    async batchDelete() {
-      try {
-        if (!confirm(`Are you sure you want to delete selected users?`)) return;
-        await this.$api.post("/dashboard/user/batch-delete", {
-          ids: this.selectedItems,
-        });
-        this.fetchItems();
-      } catch (error) {
-        console.error(error);
-      }
-    },
-    async deleteUser(i) {
-      try {
-        if (!confirm(`Are you sure you want to delete this user?`)) return;
-        await this.$api.post("/dashboard/user/delete", { user: this.items[i] });
-        this.items.splice(i, 1);
-      } catch (error) {
-        console.error(error);
-      }
-    },
-    sort(key) {
-      if (!this.form.sort[key]) this.form.sort = {};
-      this.form.sort[key] = this.form.sort[key] === 1 ? -1 : 1;
-      this.fetchItems();
-    },
     async submit() {
       try {
         this.submitLoading = true;
@@ -801,8 +549,6 @@ export default {
         name: "",
         id: "",
         password: "",
-        mobile: "",
-        type: "reseller",
       };
       this.errors = {};
       this.editMode = false;
@@ -818,52 +564,6 @@ export default {
       this.inputForm = { ...user };
       this.editMode = true;
       this.modal = true;
-    },
-    setPermission(i) {
-      this.userPermission = this.items[i];
-      this.permissionModal = true;
-    },
-    togglePermission(val) {
-      if (this.checkPermission(val)) {
-        this.userPermission.permissions =
-          this.userPermission.permissions.filter((v) => v !== val);
-      } else {
-        this.userPermission.permissions.push(val);
-      }
-    },
-    checkPermission(val) {
-      return this.userPermission?.permissions?.includes(val);
-    },
-    async updatePermission() {
-      try {
-        this.submitLoading = true;
-        await this.$api.post("/dashboard/user/update-permission", {
-          user: this.userPermission,
-        });
-        this.permissionModal = false;
-
-        this.fetchItems();
-      } catch (error) {
-        console.error(error);
-      } finally {
-        this.submitLoading = false;
-      }
-    },
-    async setPackage(i) {
-      try {
-        this.package.loading = true;
-        this.package.modal = true;
-        this.package.user = this.items[i];
-
-        if (!this.package.loaded) {
-          const { packages } = await this.$api.get("/dashboard/user/package");
-          this.package.items = packages;
-          this.package.loaded = true;
-        }
-        this.package.loading = false;
-      } catch (error) {
-        console.error(error);
-      }
     },
   },
 };

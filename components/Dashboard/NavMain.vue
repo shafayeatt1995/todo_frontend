@@ -57,8 +57,10 @@
 <script>
 import {
   BookOpen,
+  BookOpenText,
   Bot,
   ChevronRight,
+  Contact,
   DollarSign,
   LayoutPanelLeft,
   Settings2,
@@ -75,6 +77,16 @@ export default {
           title: "Dashboard",
           icon: LayoutPanelLeft,
           to: { name: "dashboard" },
+        },
+        {
+          title: "Complain",
+          icon: BookOpenText,
+          to: { name: "dashboard-complain" },
+        },
+        {
+          title: "Contact",
+          icon: Contact,
+          to: { name: "dashboard-contact" },
         },
         {
           title: "User",
@@ -102,74 +114,6 @@ export default {
         //     },
         //   ],
         // },
-        {
-          title: "Models",
-          url: "#",
-          icon: Bot,
-          isActive: false,
-          items: [
-            {
-              title: "Genesis",
-              url: "#",
-            },
-            {
-              title: "Explorer",
-              url: "#",
-            },
-            {
-              title: "Quantum",
-              url: "#",
-            },
-          ],
-        },
-        {
-          title: "Documentation",
-          url: "#",
-          icon: BookOpen,
-          isActive: false,
-          items: [
-            {
-              title: "Introduction",
-              url: "#",
-            },
-            {
-              title: "Get Started",
-              url: "#",
-            },
-            {
-              title: "Tutorials",
-              url: "#",
-            },
-            {
-              title: "Changelog",
-              url: "#",
-            },
-          ],
-        },
-        {
-          title: "Settings",
-          url: "#",
-          icon: Settings2,
-          isActive: false,
-          items: [
-            {
-              title: "General",
-              url: "#",
-            },
-            {
-              title: "Team",
-              url: "#",
-            },
-            {
-              title: "Billing",
-              url: "#",
-            },
-            {
-              title: "Limits",
-              url: "#",
-            },
-          ],
-        },
       ],
     };
   },

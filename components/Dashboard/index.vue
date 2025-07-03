@@ -9,6 +9,11 @@
           <SidebarTrigger class="-ml-1" />
           <Separator orientation="vertical" class="mr-2 h-4" />
         </div>
+        <img
+          :src="authUser?.business?.image?.url"
+          v-if="authUser"
+          class="size-16 object-contain"
+        />
         <DropdownMenu>
           <DropdownMenuTrigger>
             <Avatar>
@@ -16,8 +21,6 @@
             </Avatar>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
-            <DropdownMenuSeparator />
             <DropdownMenuItem @click="logout">
               <LogOutIcon /> Logout
             </DropdownMenuItem>
@@ -38,6 +41,12 @@ export default {
   name: "Dashboard",
   components: {
     LogOutIcon,
+  },
+  computed: {
+    authUser() {
+      const { authUser } = useAuth();
+      return authUser.value;
+    },
   },
   methods: {
     async logout() {

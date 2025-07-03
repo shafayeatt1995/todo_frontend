@@ -704,6 +704,7 @@ export default {
           business: this.items[i],
           type,
         });
+        console.log(business);
         this.userData.userType = type;
         this.userData.editUser = business;
         this.userData.selectUser =

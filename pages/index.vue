@@ -42,7 +42,9 @@
                     />
                     <ErrorMessage name="id" :error="errors" />
                   </div>
-                  <Button type="submit" class="w-full"> Login </Button>
+                  <Button type="submit" class="w-full" :disabled="loading"
+                    ><Loader2Icon class="animate-spin" v-if="loading" /> Login
+                  </Button>
                 </div>
                 <div class="text-center text-sm">
                   Don't have an account?
@@ -60,7 +62,7 @@
 </template>
 
 <script>
-import { ReceiptTextIcon } from "lucide-vue-next";
+import { Loader2Icon, ReceiptTextIcon } from "lucide-vue-next";
 
 export default {
   name: "IndexPage",
@@ -72,11 +74,13 @@ export default {
         password: "",
       },
       errors: {},
+      loading: false,
     };
   },
   methods: {
     async login() {
       try {
+        this.loading = true;
         const { token } = await this.$api.post("/auth/login", this.form);
         if (token) {
           const { login } = useAuth();
@@ -88,6 +92,8 @@ export default {
         if (error?.response?._data?.errors) {
           this.errors = error.response._data.errors;
         }
+      } finally {
+        this.loading = false;
       }
     },
   },
