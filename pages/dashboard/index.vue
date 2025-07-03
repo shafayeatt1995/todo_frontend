@@ -29,7 +29,7 @@
               </p>
               <div class="flex w-full justify-between items-center">
                 <p class="text-sm">
-                  {{ $normalDate(item.createdAt) }}
+                  {{ $shortDate(item.createdAt) }}
                 </p>
                 <Badge :variant="getVariant(item.status)">{{
                   item.status
@@ -157,7 +157,7 @@
         <p class="mt-4 font-bold text-xl">{{ todo.item.title }}</p>
         <p class="mb-2">{{ todo.item.user }}</p>
         <div class="flex justify-between items-center">
-          <p class="text-sm">{{ $normalDate(todo.item.createdAt) }}</p>
+          <p class="text-sm">{{ $shortDate(todo.item.createdAt) }}</p>
           <Badge :variant="getVariant(todo.item.status)">{{
             todo.item.status
           }}</Badge>

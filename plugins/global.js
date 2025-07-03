@@ -25,6 +25,15 @@ export default defineNuxtPlugin((nuxtApp) => {
       day: "numeric",
     })
   );
+
+  // Dec 27, 2024
+  nuxtApp.provide("shortDate", (value) =>
+    formatDate(value, {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    })
+  );
   // 12/27/2024, 05:37:48 PM
   nuxtApp.provide("normalDate2", (value) =>
     formatDate(value, {
