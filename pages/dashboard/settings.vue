@@ -1,5 +1,5 @@
 <template>
-  <LayoutDashboard>
+  <Dashboard>
     <div class="p-2">
       <div class="flex justify-between items-center">
         <h1 class="text-2xl font-bold">Settings</h1>
@@ -19,7 +19,7 @@
         </Button>
       </div>
     </div>
-  </LayoutDashboard>
+  </Dashboard>
 </template>
 
 <script>

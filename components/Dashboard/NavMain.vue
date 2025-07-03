@@ -98,6 +98,11 @@ export default {
           icon: DollarSign,
           to: { name: "dashboard-package" },
         },
+        {
+          title: "Settings",
+          icon: Settings2,
+          to: { name: "dashboard-settings" },
+        },
         // {
         //   title: "Users",
         //   url: "#",
