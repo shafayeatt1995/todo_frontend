@@ -23,7 +23,7 @@ export default {
       try {
         await this.$api.get("/dashboard/clean-image");
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     },
   },

@@ -2,7 +2,10 @@
   <div class="flex h-svh flex-col items-center justify-center">
     <div class="w-full p-2 flex justify-between items-center border shadow">
       <img src="/logo.png" class="max-h-12" />
-      <Button @click="logout"><LogOut /> logout</Button>
+      <div class="flex items-center gap-2">
+        <ConnectNotification />
+        <Button @click="logout"><LogOut /> logout</Button>
+      </div>
     </div>
     <div class="flex-1 w-full overflow-y-auto overflow-x-hidden relative">
       <slot />

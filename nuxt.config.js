@@ -19,6 +19,7 @@ export default defineNuxtConfig({
     strategies: "generateSW",
     includeAssets: ["logo.png"],
     workbox: {
+      importScripts: ["firebase-messaging-sw.js"],
       globPatterns: ["**/*.{js,css,html,png,svg,ico}"],
       runtimeCaching: [
         {
