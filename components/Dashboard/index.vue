@@ -21,6 +21,10 @@
             </Avatar>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
+            <DropdownMenuLabel class="text-center">
+              {{ authUser?.name }}
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
             <DropdownMenuItem @click="logout">
               <LogOutIcon /> Logout
             </DropdownMenuItem>

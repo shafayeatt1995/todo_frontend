@@ -1,14 +1,12 @@
 <template>
   <Head>
-    <Title>Package - Admin</Title>
+    <Title>Zone - Admin</Title>
   </Head>
   <Dashboard>
     <div class="w-full space-y-2">
       <div class="flex justify-between">
-        <h1 class="flex gap-2 items-center text-2xl">
-          <DollarSignIcon /> My packages
-        </h1>
-        <Button @click="modal = true"> <PlusIcon /> Add Package </Button>
+        <h1 class="flex gap-2 items-center text-2xl"><MapPinnedIcon /> Zone</h1>
+        <Button @click="modal = true"> <PlusIcon /> Add Zone </Button>
       </div>
       <div
         class="flex flex-wrap md:grid grid-cols-2 xl:flex gap-2 items-center justify-between"
@@ -103,15 +101,6 @@
                   <Sort :value="form.sort.name" />
                 </div>
               </TableHead>
-              <TableHead>
-                <div
-                  class="flex gap-2 items-center cursor-pointer"
-                  @click="sort('price')"
-                >
-                  <p>Price</p>
-                  <Sort :value="form.sort.price" />
-                </div>
-              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -119,10 +108,6 @@
               <TableCell>
                 <Skeleton class="w-full h-5 rounded-full" v-if="loading" />
                 <span v-else>{{ pack.name }}</span>
-              </TableCell>
-              <TableCell>
-                <Skeleton class="w-full h-5 rounded-full" v-if="loading" />
-                <p v-else>{{ pack.price }}</p>
               </TableCell>
               <TableCell class="w-14">
                 <Skeleton class="w-full h-5 rounded-full" v-if="loading" />
@@ -137,9 +122,13 @@
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent class="" align="end">
-                    <DropdownMenuItem @click="editPackage(pack)">
+                    <DropdownMenuItem @click="editZone(pack)">
                       <SquarePenIcon />
-                      <span>Edit package</span>
+                      <span>Edit zone</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem @click="deleteZone(pack)" v-if="isOwner">
+                      <Trash2Icon />
+                      <span>Delete zone</span>
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -161,24 +150,19 @@
     <Dialog v-model:open="modal">
       <DialogScrollContent>
         <DialogHeader>
-          <DialogTitle>{{ editMode ? "Edit" : "Add" }} Package</DialogTitle>
+          <DialogTitle>{{ editMode ? "Edit" : "Add" }} Zone</DialogTitle>
         </DialogHeader>
         <div class="space-y-3">
           <div class="space-y-1">
-            <Label for="name"> Package name </Label>
+            <Label for="name"> Zone name </Label>
             <Input id="name" v-model="inputForm.name" />
             <ErrorMessage name="name" :error="errors" />
-          </div>
-          <div class="space-y-1">
-            <Label for="price"> Price </Label>
-            <Input id="price" v-model.number="inputForm.price" />
-            <ErrorMessage name="price" :error="errors" />
           </div>
         </div>
         <DialogFooter>
           <Button type="button" @click="submit" :disabled="submitLoading">
             <Loader2Icon v-if="submitLoading" class="animate-spin" />
-            {{ editMode ? "Update" : "Add" }} package
+            {{ editMode ? "Update" : "Add" }} zone
           </Button>
         </DialogFooter>
       </DialogScrollContent>
@@ -188,6 +172,7 @@
 
 <script>
 import {
+  MapPinnedIcon,
   BookOpenIcon,
   MoreHorizontalIcon,
   Trash2Icon,
@@ -202,19 +187,20 @@ import {
 } from "lucide-vue-next";
 
 export default {
-  name: "Package",
+  name: "Zone",
   components: {
     ChevronDownIcon,
     BookOpenIcon,
     MoreHorizontalIcon,
-    Trash2Icon,
     SquarePenIcon,
     PlusIcon,
     PauseIcon,
     PlayIcon,
+    MapPinnedIcon,
     ChevronDownIcon,
     ChevronUpIcon,
     Loader2Icon,
+    Trash2Icon,
     DollarSignIcon,
   },
   data() {
@@ -239,10 +225,15 @@ export default {
       editMode: false,
       inputForm: {
         name: "",
-        price: 0,
       },
       submitLoading: false,
     };
+  },
+  computed: {
+    isOwner() {
+      const { isOwner } = usePermission();
+      return isOwner.value;
+    },
   },
   watch: {
     "form.page"(val) {
@@ -291,11 +282,11 @@ export default {
       try {
         this.loading = true;
         this.selectedItems = [];
-        const { packages, total } = await this.$api.post(
-          `/dashboard/package/fetch`,
+        const { zones, total } = await this.$api.post(
+          `/dashboard/zone/fetch`,
           this.form
         );
-        this.items = packages;
+        this.items = zones;
         this.total = total;
       } catch (error) {
         console.error(error);
@@ -316,10 +307,10 @@ export default {
       try {
         this.submitLoading = true;
         if (this.editMode) {
-          await this.$api.post(`/dashboard/package/edit`, this.inputForm);
+          await this.$api.post(`/dashboard/zone/edit`, this.inputForm);
           this.fetchItems();
         } else {
-          await this.$api.post(`/dashboard/package/add`, this.inputForm);
+          await this.$api.post(`/dashboard/zone/add`, this.inputForm);
           this.refetch();
         }
         this.reset();
@@ -336,10 +327,6 @@ export default {
     reset() {
       this.inputForm = {
         name: "",
-        price: 0,
-        vatType: "fixed",
-        vatAmount: 0,
-        ipType: "Dynamic IP",
       };
       this.errors = {};
       this.editMode = false;
@@ -351,10 +338,19 @@ export default {
         this.form.page = 1;
       }
     },
-    editPackage(item) {
+    editZone(item) {
       this.inputForm = { ...item };
       this.editMode = true;
       this.modal = true;
+    },
+    async deleteZone(item) {
+      try {
+        if (!confirm(`Are you sure you want to delete this zone?`)) return;
+        await this.$api.post(`/dashboard/zone/delete`, { _id: item._id });
+        this.fetchItems();
+      } catch (error) {
+        console.error(error);
+      }
     },
   },
 };

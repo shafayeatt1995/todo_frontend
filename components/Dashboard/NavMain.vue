@@ -63,6 +63,7 @@ import {
   Contact,
   DollarSign,
   LayoutPanelLeft,
+  MapPinned,
   Settings2,
   Users,
 } from "lucide-vue-next";
@@ -84,9 +85,9 @@ export default {
           to: { name: "dashboard-complain" },
         },
         {
-          title: "Contact",
+          title: "Customer",
           icon: Contact,
-          to: { name: "dashboard-contact" },
+          to: { name: "dashboard-customer" },
         },
         {
           title: "User",
@@ -94,9 +95,9 @@ export default {
           to: { name: "dashboard-user" },
         },
         {
-          title: "Package",
-          icon: DollarSign,
-          to: { name: "dashboard-package" },
+          title: "Zone",
+          icon: MapPinned,
+          to: { name: "dashboard-zone" },
         },
         {
           title: "Settings",

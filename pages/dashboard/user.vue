@@ -264,10 +264,10 @@
         </DialogFooter>
       </DialogScrollContent>
     </Dialog>
-    <Dialog v-model:open="package.modal">
+    <Dialog v-model:open="zone.modal">
       <DialogScrollContent class="max-w-2xl">
         <DialogHeader>
-          <DialogTitle> Set Package</DialogTitle>
+          <DialogTitle> Set Zone</DialogTitle>
         </DialogHeader>
         <div>
           <div class="border rounded-md max-h-64 overflow-y-auto">
@@ -294,33 +294,33 @@
                 </TableHeader>
                 <TableBody>
                   <TableRow
-                    v-for="(pack, i) in package.loading ? 10 : package.items"
+                    v-for="(pack, i) in zone.loading ? 10 : zone.items"
                     :key="i"
                   >
                     <TableCell>
                       <Skeleton
                         class="w-full h-5 rounded-full"
-                        v-if="package.loading"
+                        v-if="zone.loading"
                       />
                       <span v-else>{{ pack.name }}</span>
                     </TableCell>
                     <TableCell>
                       <Skeleton
                         class="w-full h-5 rounded-full"
-                        v-if="package.loading"
+                        v-if="zone.loading"
                       />
                       <span v-else>{{ pack.price }}</span>
                     </TableCell>
                     <TableCell>
                       <Skeleton
                         class="w-full h-5 rounded-full"
-                        v-if="loading"
+                        v-if="zone.loading"
                       />
                       <span v-else>{{ pack.vatType }}</span>
                     </TableCell>
                   </TableRow>
 
-                  <TableRow v-if="!loading && items.length === 0">
+                  <TableRow v-if="!zone.loading && zone.items.length === 0">
                     <TableCell :colspan="10" class="h-24 text-center">
                       <div
                         class="flex flex-col items-center justify-center py-10"
@@ -336,13 +336,9 @@
           </div>
         </div>
         <DialogFooter>
-          <Button
-            type="button"
-            @click="updatePermission"
-            :disabled="submitLoading"
-          >
+          <Button type="button" @click="updateZone" :disabled="submitLoading">
             <Loader2Icon v-if="submitLoading" class="animate-spin" />
-            Update Package
+            Update Zone
           </Button>
         </DialogFooter>
       </DialogScrollContent>
@@ -415,7 +411,7 @@ export default {
       submitLoading: false,
       permissionModal: false,
       userPermission: null,
-      package: {
+      zone: {
         user: {},
         items: [],
         loading: false,

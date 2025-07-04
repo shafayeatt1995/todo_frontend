@@ -59,6 +59,7 @@ import {
   ChevronRight,
   DollarSign,
   LayoutPanelLeft,
+  MapPinned,
   Users,
 } from "lucide-vue-next";
 
@@ -92,9 +93,9 @@ export default {
           ],
         },
         {
-          title: "Package",
-          icon: DollarSign,
-          to: { name: "admin-package" },
+          title: "Zone",
+          icon: MapPinned,
+          to: { name: "admin-zone" },
         },
       ],
     };

@@ -1,14 +1,14 @@
 <template>
   <Head>
-    <Title>Contact - Dashboard</Title>
+    <Title>Customer - Dashboard</Title>
   </Head>
   <Dashboard>
     <div class="w-full space-y-2">
       <div class="flex justify-between">
         <h1 class="flex gap-2 items-center text-2xl">
-          <ContactIcon /> Contact
+          <ContactIcon />Customer
         </h1>
-        <Button @click="modal = true"> <PlusIcon /> Add Contact </Button>
+        <Button @click="modal = true"> <PlusIcon /> Add Customer </Button>
       </div>
       <Input v-model="form.search" placeholder="Search..." />
       <div class="overflow-y-auto divide-y divide-gray-300">
@@ -39,9 +39,9 @@
                 <CopyIcon />
                 <span>Copy ID</span>
               </DropdownMenuItem>
-              <DropdownMenuItem @click="editContact(i)">
+              <DropdownMenuItem @click="editCustomer(i)">
                 <SquarePenIcon />
-                <span>Edit contact</span>
+                <span>Edit customer</span>
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <a :href="`tel:${item.phone}`" class="flex gap-2 items-center">
@@ -49,7 +49,7 @@
                   <span>Call</span>
                 </a>
               </DropdownMenuItem>
-              <DropdownMenuItem @click="deleteContact(i)" v-if="isOwner">
+              <DropdownMenuItem @click="deleteCustomer(i)" v-if="isOwner">
                 <Trash2Icon />
                 <span>Delete</span>
               </DropdownMenuItem>
@@ -67,7 +67,7 @@
     <Dialog v-model:open="modal">
       <DialogScrollContent>
         <DialogHeader>
-          <DialogTitle>{{ editMode ? "Edit" : "Add" }} Contact</DialogTitle>
+          <DialogTitle>{{ editMode ? "Edit" : "Add" }} Customer</DialogTitle>
         </DialogHeader>
         <div class="space-y-3">
           <div class="space-y-1">
@@ -91,30 +91,30 @@
             <ErrorMessage name="address" :error="errors" />
           </div>
           <div class="space-y-1">
-            <Label for="package"> Package </Label>
-            <Select v-model="inputForm.packageID">
+            <Label for="zone"> Zone </Label>
+            <Select v-model="inputForm.zoneID">
               <SelectTrigger class="w-full">
-                <SelectValue placeholder="Select a package" />
+                <SelectValue placeholder="Select a zone" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
                   <SelectItem
-                    v-for="pack in packages"
-                    :key="pack._id"
-                    :value="pack._id"
+                    v-for="zone in zones"
+                    :key="zone._id"
+                    :value="zone._id"
                   >
-                    {{ pack.name }}
+                    {{ zone.name }}
                   </SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
-            <ErrorMessage name="packageID" :error="errors" />
+            <ErrorMessage name="zoneID" :error="errors" />
           </div>
         </div>
         <DialogFooter>
           <Button type="button" @click="submit" :disabled="submitLoading">
             <Loader2Icon v-if="submitLoading" class="animate-spin" />
-            {{ editMode ? "Update" : "Add" }} Contact
+            {{ editMode ? "Update" : "Add" }} Customer
           </Button>
         </DialogFooter>
       </DialogScrollContent>
@@ -122,7 +122,7 @@
     <Dialog v-model:open="showModal">
       <DialogScrollContent>
         <DialogHeader>
-          <DialogTitle>Contact Details</DialogTitle>
+          <DialogTitle>Customer Details</DialogTitle>
         </DialogHeader>
         <div class="space-y-2">
           <p class="flex gap-2 items-center">
@@ -137,11 +137,7 @@
             Phone: {{ selectItem.phone }}
             <a :href="`tel:${selectItem.phone}`"><PhoneCallIcon /></a>
           </p>
-          <p>
-            Package: {{ selectItem.package?.name }}({{
-              selectItem.package?.price
-            }})
-          </p>
+          <p>Zone: {{ selectItem.zone?.name }}</p>
           <p>Address: {{ selectItem.address }}</p>
         </div>
       </DialogScrollContent>
@@ -226,7 +222,7 @@ import {
 import { toast } from "vue-sonner";
 
 export default {
-  name: "Contact",
+  name: "Customer",
   components: {
     ContactIcon,
     PlusIcon,
@@ -255,10 +251,10 @@ export default {
         name: "",
         phone: "",
         address: "",
-        packageID: "",
+        zoneID: "",
       },
       errors: {},
-      packages: [],
+      zones: [],
       items: [],
       showModal: false,
       selectItem: null,
@@ -295,18 +291,18 @@ export default {
     },
   },
   mounted() {
-    this.getPackage();
+    this.getZone();
     this.fetchItems();
   },
   methods: {
     async fetchItems() {
       try {
         this.loading = true;
-        const { contacts } = await this.$api.get(
-          "/dashboard/contact",
+        const { customers } = await this.$api.get(
+          "/dashboard/customer",
           this.form
         );
-        this.items.push(...contacts);
+        this.items.push(...customers);
         this.loaded = this.items.length === this.form.perPage;
       } catch (error) {
         console.error(error);
@@ -314,10 +310,10 @@ export default {
         this.loading = false;
       }
     },
-    async getPackage() {
+    async getZone() {
       try {
-        const { packages } = await this.$api.get("/dashboard/contact/package");
-        this.packages = packages;
+        const { zones } = await this.$api.get("/dashboard/customer/zone");
+        this.zones = zones;
       } catch (error) {
         console.error(error);
       }
@@ -326,9 +322,9 @@ export default {
       this.submitLoading = true;
       try {
         if (this.editMode) {
-          await this.$api.put(`/dashboard/contact`, this.inputForm);
+          await this.$api.put(`/dashboard/customer`, this.inputForm);
         } else {
-          await this.$api.post("/dashboard/contact", this.inputForm);
+          await this.$api.post("/dashboard/customer", this.inputForm);
         }
         this.modal = false;
         this.submitLoading = false;
@@ -348,7 +344,7 @@ export default {
         name: "",
         phone: "",
         address: "",
-        packageID: "",
+        zoneID: "",
       };
       this.errors = {};
     },
@@ -366,17 +362,17 @@ export default {
       this.form.page += 1;
       this.fetchItems();
     },
-    editContact(i) {
+    editCustomer(i) {
       this.inputForm = this.items[i];
       this.editMode = true;
       this.modal = true;
     },
-    async deleteContact(i) {
+    async deleteCustomer(i) {
       try {
         if (!this.isOwner) return;
-        if (!confirm(`Are you sure you want to delete this contact?`)) return;
-        await this.$api.post(`/dashboard/contact/delete`, {
-          contact: this.items[i],
+        if (!confirm(`Are you sure you want to delete this customer?`)) return;
+        await this.$api.post(`/dashboard/customer/delete`, {
+          customer: this.items[i],
         });
         this.items.splice(i, 1);
       } catch (error) {
