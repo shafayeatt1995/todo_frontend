@@ -100,6 +100,11 @@ export default {
           to: { name: "dashboard-zone" },
         },
         {
+          title: "Sub Zone",
+          icon: MapPinned,
+          to: { name: "dashboard-sub-zone" },
+        },
+        {
           title: "Settings",
           icon: Settings2,
           to: { name: "dashboard-settings" },
