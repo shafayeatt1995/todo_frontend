@@ -130,7 +130,7 @@
                 </SelectGroup>
               </SelectContent>
             </Select>
-            <ErrorMessage name="zoneID" :error="errors" />
+            <ErrorMessage name="subZoneID" :error="errors" />
           </div>
           <div class="space-y-1">
             <Label for="address"> Address </Label>
@@ -154,7 +154,7 @@
         <div class="space-y-2">
           <p class="flex gap-2 items-center">
             <span> ID: {{ selectItem.id }} </span>
-            <Button @click="copyID(selectItem.id)">
+            <Button size="sm" @click="copyID(selectItem.id)">
               <CopyIcon />
               <span>Copy ID</span>
             </Button>
@@ -163,7 +163,7 @@
           <p class="flex gap-2 items-center">
             Phone: {{ selectItem.phone }}
             <a
-              :class="cn(buttonVariants({ variant: 'default' }))"
+              :class="cn(buttonVariants({ variant: 'default', size: 'sm' }))"
               :href="`tel:${selectItem.phone}`"
               ><PhoneCallIcon /> Call</a
             >

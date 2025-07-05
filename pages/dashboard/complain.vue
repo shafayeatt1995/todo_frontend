@@ -112,7 +112,7 @@
               class="h-16 w-20 object-contain"
             />
             <div class="flex-1 flex flex-col overflow-hidden">
-              <p class="text-sm font-medium">
+              <p class="text-sm font-medium line-clamp-2">
                 {{ limitedText(item.user, item.description) }}
               </p>
               <div class="flex w-full justify-between items-center">
@@ -251,8 +251,21 @@
               class="w-full max-h-96 object-contain"
             />
           </div>
+          <div
+            class="flex items-center gap-2 mb-2 justify-between"
+            v-if="todo.item.user"
+          >
+            <p>User ID: {{ todo.item.user }}</p>
+            <Button
+              variant="outline"
+              size="sm"
+              @click="copyUserID(todo.item.user)"
+            >
+              <CopyIcon />
+              Copy
+            </Button>
+          </div>
           <p class="mt-4 font-bold text-xl">{{ todo.item.description }}</p>
-          <p class="mb-2">{{ todo.item.user }}</p>
           <div class="flex justify-between items-center">
             <p class="text-sm">{{ $shortDate(todo.item.createdAt) }}</p>
             <Badge :variant="getVariant(todo.item.status)">{{
@@ -275,6 +288,7 @@
 
 <script>
 import {
+  CopyIcon,
   BookOpenTextIcon,
   BookOpenIcon,
   PlusIcon,
@@ -283,6 +297,7 @@ import {
   ImagePlus,
   Loader2Icon,
 } from "lucide-vue-next";
+import { toast } from "vue-sonner";
 
 export default {
   name: "User",
@@ -294,6 +309,7 @@ export default {
     XIcon,
     ImagePlus,
     Loader2Icon,
+    CopyIcon,
   },
   data() {
     return {
@@ -484,12 +500,12 @@ export default {
     },
     limitedText(user, description) {
       const userPart = user ? `${user} - ` : "";
-      const fullText = `${userPart}${description || ""}`;
-      return fullText.length > 60 ? fullText.slice(0, 60) + "..." : fullText;
+      return `${userPart}${description || ""}`;
     },
-    async copyUserID(userID) {
+    copyUserID(userID) {
       try {
-        await navigator.clipboard.writeText(userID);
+        navigator.clipboard.writeText(userID);
+        toast.success("User ID copied successfully");
       } catch (error) {
         console.error(error);
       }
