@@ -106,15 +106,14 @@
             @click="openTodo(i)"
           >
             <img
-              :src="item?.image?.url || authUser.business?.image?.url"
+              :src="
+                item?.image?.url || authUser.business?.image?.url || '/2.webp'
+              "
               class="h-16 w-20 object-contain"
             />
             <div class="flex-1 flex flex-col overflow-hidden">
-              <p class="truncate w-full text-sm font-medium">
-                {{ item.title }}
-              </p>
-              <p class="truncate w-full text-xs font-medium">
-                {{ item.user }}
+              <p class="text-sm font-medium">
+                {{ limitedText(item.user, item.description) }}
               </p>
               <div class="flex w-full justify-between items-center">
                 <p class="text-sm">
@@ -135,6 +134,12 @@
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
+                    <DropdownMenuItem
+                      @click="copyUserID(item.user)"
+                      v-if="item.user"
+                    >
+                      Copy user id
+                    </DropdownMenuItem>
                     <DropdownMenuItem @click="editTodo(item)">
                       Edit
                     </DropdownMenuItem>
@@ -145,10 +150,10 @@
                       Make Pending
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                      @click="updateStatus('Running', i)"
-                      v-if="item.status !== 'Running'"
+                      @click="updateStatus('Working', i)"
+                      v-if="item.status !== 'Working'"
                     >
-                      Make Running
+                      Make Working
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       @click="updateStatus('Completed', i)"
@@ -168,13 +173,6 @@
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
-              <!-- <p class="text-sm">
-                {{
-                  item.description.length > 120
-                    ? item.description.slice(0, 120) + "..."
-                    : item.description
-                }}
-              </p> -->
             </div>
           </div>
         </div>
@@ -194,9 +192,9 @@
         </DialogHeader>
         <div class="space-y-3">
           <div class="space-y-1">
-            <Label for="title"> Title </Label>
-            <Input id="title" v-model="inputForm.title" />
-            <ErrorMessage name="title" :error="errors" />
+            <Label for="user"> User ID (optional) </Label>
+            <Input id="user" v-model="inputForm.user" />
+            <ErrorMessage name="user" :error="errors" />
           </div>
           <div class="space-y-1">
             <Label for="description"> Description </Label>
@@ -248,11 +246,12 @@
         <div>
           <div class="flex w-full justify-center">
             <img
-              :src="todo.item?.image?.url || '/logo.png'"
+              v-if="todo.item?.image?.url || authUser?.business?.image?.url"
+              :src="todo.item?.image?.url || authUser?.business?.image?.url"
               class="w-full max-h-96 object-contain"
             />
           </div>
-          <p class="mt-4 font-bold text-xl">{{ todo.item.title }}</p>
+          <p class="mt-4 font-bold text-xl">{{ todo.item.description }}</p>
           <p class="mb-2">{{ todo.item.user }}</p>
           <div class="flex justify-between items-center">
             <p class="text-sm">{{ $shortDate(todo.item.createdAt) }}</p>
@@ -299,12 +298,12 @@ export default {
   data() {
     return {
       perPageOptions: [25, 50, 100],
-      searchByOptions: ["title"],
+      searchByOptions: ["user", "description"],
       form: {
         page: 1,
         perPage: 25,
         keyword: "",
-        searchBy: "title",
+        searchBy: "user",
         sort: { _id: -1 },
       },
       errors: {},
@@ -316,7 +315,7 @@ export default {
       modal: false,
       editMode: false,
       inputForm: {
-        title: "",
+        user: "",
         description: "",
         image: "",
       },
@@ -336,7 +335,7 @@ export default {
     getVariant() {
       return (status = "") => {
         if (status === "Pending") return "amber";
-        if (status === "Running") return "blue";
+        if (status === "Working") return "blue";
         if (status === "Completed") return "green";
         if (status === "Cancelled") return "rose";
       };
@@ -422,7 +421,7 @@ export default {
         this.submitLoading = true;
 
         const formData = new FormData();
-        formData.append("title", this.inputForm.title);
+        formData.append("user", this.inputForm.user);
         formData.append("description", this.inputForm.description);
         if (this.inputForm.image)
           formData.append("image", this.inputForm.image);
@@ -446,7 +445,7 @@ export default {
     reset() {
       this.editMode = false;
       this.inputForm = {
-        title: "",
+        user: "",
         description: "",
         image: "",
       };
@@ -479,6 +478,18 @@ export default {
         await this.$api.post("/dashboard/todo/update-status", { todo, status });
         this.items[i].status = status;
         this.todo.modal = false;
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    limitedText(user, description) {
+      const userPart = user ? `${user} - ` : "";
+      const fullText = `${userPart}${description || ""}`;
+      return fullText.length > 60 ? fullText.slice(0, 60) + "..." : fullText;
+    },
+    async copyUserID(userID) {
+      try {
+        await navigator.clipboard.writeText(userID);
       } catch (error) {
         console.error(error);
       }
