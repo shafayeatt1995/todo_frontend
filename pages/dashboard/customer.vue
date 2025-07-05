@@ -10,7 +10,9 @@
         </h1>
         <Button @click="modal = true"> <PlusIcon /> Add Customer </Button>
       </div>
-      <Input v-model="form.search" placeholder="Search..." />
+      <div class="bg-white sticky top-16 py-2 mb-0">
+        <Input v-model="form.search" placeholder="Search..." class="w-full" />
+      </div>
       <div class="overflow-y-auto divide-y divide-gray-300">
         <div
           v-for="(item, i) in items"
@@ -18,7 +20,7 @@
           class="py-2 flex justify-between items-center"
         >
           <p class="cursor-pointer flex-1" @click="show(i)">
-            {{ item.id }}. {{ item.name }} ({{ item.phone }})
+            {{ item.id }} -> {{ item.name }}
           </p>
           <DropdownMenu>
             <DropdownMenuTrigger as-child>
@@ -71,7 +73,7 @@
         </DialogHeader>
         <div class="space-y-3">
           <div class="space-y-1">
-            <Label for="id"> ID </Label>
+            <Label for="id"> User ID </Label>
             <Input id="id" v-model="inputForm.id" />
             <ErrorMessage name="id" :error="errors" />
           </div>
@@ -86,9 +88,9 @@
             <ErrorMessage name="phone" :error="errors" />
           </div>
           <div class="space-y-1">
-            <Label for="address"> Address </Label>
-            <Textarea id="address" v-model="inputForm.address" />
-            <ErrorMessage name="address" :error="errors" />
+            <Label for="package"> Package </Label>
+            <Input id="package" v-model="inputForm.package" />
+            <ErrorMessage name="package" :error="errors" />
           </div>
           <div class="space-y-1">
             <Label for="zone"> Zone </Label>
@@ -110,6 +112,31 @@
             </Select>
             <ErrorMessage name="zoneID" :error="errors" />
           </div>
+          <div class="space-y-1">
+            <Label for="subZone"> Sub zone </Label>
+            <Select v-model="inputForm.subZoneID">
+              <SelectTrigger class="w-full">
+                <SelectValue placeholder="Select a sub zone" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem
+                    v-for="subZone in subZones"
+                    :key="subZone._id"
+                    :value="subZone._id"
+                  >
+                    {{ subZone.name }}
+                  </SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+            <ErrorMessage name="zoneID" :error="errors" />
+          </div>
+          <div class="space-y-1">
+            <Label for="address"> Address </Label>
+            <Textarea id="address" v-model="inputForm.address" />
+            <ErrorMessage name="address" :error="errors" />
+          </div>
         </div>
         <DialogFooter>
           <Button type="button" @click="submit" :disabled="submitLoading">
@@ -127,7 +154,7 @@
         <div class="space-y-2">
           <p class="flex gap-2 items-center">
             <span> ID: {{ selectItem.id }} </span>
-            <Button variant="ghost" @click="copyID(selectItem.id)">
+            <Button @click="copyID(selectItem.id)">
               <CopyIcon />
               <span>Copy ID</span>
             </Button>
@@ -135,10 +162,16 @@
           <p>Name: {{ selectItem.name }}</p>
           <p class="flex gap-2 items-center">
             Phone: {{ selectItem.phone }}
-            <a :href="`tel:${selectItem.phone}`"><PhoneCallIcon /></a>
+            <a
+              :class="cn(buttonVariants({ variant: 'default' }))"
+              :href="`tel:${selectItem.phone}`"
+              ><PhoneCallIcon /> Call</a
+            >
           </p>
           <p>Zone: {{ selectItem.zone?.name }}</p>
-          <p>Address: {{ selectItem.address }}</p>
+          <p>Sub-zone: {{ selectItem.subZone?.name }}</p>
+          <p>Address: {{ selectItem?.address }}</p>
+          <p>Package: {{ selectItem?.package }}</p>
         </div>
       </DialogScrollContent>
     </Dialog>
@@ -149,9 +182,9 @@
         </DialogHeader>
         <div class="space-y-3">
           <div class="space-y-1">
-            <Label for="title"> Title </Label>
-            <Input id="title" v-model="complain.form.title" />
-            <ErrorMessage name="title" :error="errors" />
+            <Label for="user"> User ID </Label>
+            <Input id="user" v-model="complain.form.user" />
+            <ErrorMessage name="user" :error="errors" />
           </div>
           <div class="space-y-1">
             <Label for="description"> Description </Label>
@@ -220,6 +253,8 @@ import {
   CopyIcon,
 } from "lucide-vue-next";
 import { toast } from "vue-sonner";
+import { cn } from "../../lib/utils";
+import { buttonVariants } from "../../components/ui/button";
 
 export default {
   name: "Customer",
@@ -250,11 +285,14 @@ export default {
         id: "",
         name: "",
         phone: "",
+        package: "",
         address: "",
         zoneID: "",
+        subZoneID: "",
       },
       errors: {},
       zones: [],
+      subZones: [],
       items: [],
       showModal: false,
       selectItem: null,
@@ -262,15 +300,16 @@ export default {
       loading: false,
       loaded: false,
       complain: {
-        user: null,
         modal: false,
         form: {
-          title: "",
+          user: "",
           description: "",
           image: null,
         },
         previewImage: null,
       },
+      editInit: false,
+      zoneLoaded: false,
     };
   },
   computed: {
@@ -281,6 +320,7 @@ export default {
   },
   watch: {
     modal(val) {
+      this.getZone();
       if (!val) this.reset();
     },
     "form.search"() {
@@ -289,12 +329,21 @@ export default {
         this.refetch();
       }, 500);
     },
+    "inputForm.zoneID"() {
+      if (this.editInit) {
+        this.editInit = false;
+      } else {
+        this.inputForm.subZoneID = "";
+      }
+      this.getSubZone();
+    },
   },
   mounted() {
-    this.getZone();
     this.fetchItems();
   },
   methods: {
+    cn,
+    buttonVariants,
     async fetchItems() {
       try {
         this.loading = true;
@@ -312,8 +361,22 @@ export default {
     },
     async getZone() {
       try {
+        if (this.zoneLoaded) return;
         const { zones } = await this.$api.get("/dashboard/customer/zone");
         this.zones = zones;
+      } catch (error) {
+        console.error(error);
+      } finally {
+        this.zoneLoaded = true;
+      }
+    },
+    async getSubZone() {
+      try {
+        const { subZones } = await this.$api.get(
+          "/dashboard/customer/sub-zone",
+          { zoneID: this.inputForm.zoneID }
+        );
+        this.subZones = subZones;
       } catch (error) {
         console.error(error);
       }
@@ -343,8 +406,10 @@ export default {
         id: "",
         name: "",
         phone: "",
+        package: "",
         address: "",
         zoneID: "",
+        subZoneID: "",
       };
       this.errors = {};
     },
@@ -363,8 +428,9 @@ export default {
       this.fetchItems();
     },
     editCustomer(i) {
-      this.inputForm = this.items[i];
+      this.editInit = true;
       this.editMode = true;
+      this.inputForm = this.items[i];
       this.modal = true;
     },
     async deleteCustomer(i) {
@@ -380,7 +446,7 @@ export default {
       }
     },
     createComplain(i) {
-      this.complain.user = this.items[i];
+      this.complain.form.user = this.items[i].id;
       this.complain.modal = true;
     },
     resetImage() {
@@ -395,9 +461,8 @@ export default {
       try {
         this.submitLoading = true;
         const formData = new FormData();
-        formData.append("title", this.complain.form.title);
         formData.append("description", this.complain.form.description);
-        formData.append("userID", this.complain.user.id);
+        formData.append("user", this.complain.form.user);
         if (this.complain.form.image)
           formData.append("image", this.complain.form.image);
         await this.$api.post("/dashboard/todo/add", null, formData);

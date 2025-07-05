@@ -27,6 +27,13 @@
         <p class="text-xl font-bold text-center">Zone</p>
       </NuxtLink>
       <NuxtLink
+        to="/dashboard/sub-zone"
+        class="border-rounded-md p-2 flex flex-col justify-center items-center bg-cyan-50 border-cyan-300 border aspect-square text-cyan-500 rounded-xl"
+      >
+        <MapPinnedIcon :size="100" />
+        <p class="text-xl font-bold text-center">Sub Zone</p>
+      </NuxtLink>
+      <NuxtLink
         to="/dashboard/user"
         class="border-rounded-md p-2 flex flex-col justify-center items-center bg-rose-50 border-rose-300 border aspect-square text-rose-500 rounded-xl"
       >
