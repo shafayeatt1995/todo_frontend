@@ -11,14 +11,18 @@
           class="size-10 object-contain"
         />
         <div class="grid flex-1 text-left text-sm leading-tight">
-          <span class="truncate font-semibold">
+          <p class="truncate font-semibold">
             {{ authUser?.business?.name }}
-          </span>
-          <span class="truncate text-xs">
-            {{ $normalDate(authUser?.business?.exp) }}
-            <span v-if="expDate > 0">(left {{ expDate }} days)</span>
+          </p>
+          <p class="flex items-center gap-1 text-xs">
+            <span class="truncate" v-if="expDate > 0">
+              {{ $normalDate(authUser?.business?.exp) }}
+            </span>
             <span v-else>(Expired)</span>
-          </span>
+            <span v-if="authUser?.business?.sms >= 0"
+              >(SMS: {{ authUser?.business?.sms }})</span
+            >
+          </p>
         </div>
       </SidebarMenuButton>
     </SidebarMenuItem>
