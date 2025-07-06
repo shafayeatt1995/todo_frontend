@@ -1,24 +1,62 @@
 <template>
+  <Head>
+    <Title>Settings - Dashboard</Title>
+  </Head>
   <Dashboard>
-    <div class="p-2">
-      <div class="flex justify-between items-center">
-        <h1 class="text-2xl font-bold">Settings</h1>
+    <Tabs :defaultValue="selectTab" class="w-full overflow-hidden">
+      <div class="w-full overflow-x-auto whitespace-nowrap">
+        <TabsList class="w-full flex gap-2 min-w-max">
+          <TabsTrigger
+            v-for="tab in tabs"
+            :key="tab.value"
+            :value="tab.value"
+            >{{ tab.label }}</TabsTrigger
+          >
+        </TabsList>
       </div>
-      <div class="flex justify-between items-center mb-2">
-        <p>Connect Notification</p>
-        <Button @click="connect" :disabled="connectLoading">
-          <Loader2Icon v-if="connectLoading" class="animate-spin" />
-          Connect
-        </Button>
-      </div>
-      <div class="flex justify-between items-center mb-2">
-        <p>Check Notification</p>
-        <Button @click="check" :disabled="checkLoading">
-          <Loader2Icon v-if="checkLoading" class="animate-spin" />
-          Check
-        </Button>
-      </div>
-    </div>
+      <TabsContent value="notification">
+        <Card class="py-4 px-2">
+          <CardHeader class="p-0">
+            <CardTitle>Notification Settings</CardTitle>
+          </CardHeader>
+          <CardContent class="space-y-2 p-0">
+            <div class="flex justify-between items-center mb-2">
+              <p>Connect Notification</p>
+              <Button @click="connect" :disabled="connectLoading">
+                <Loader2Icon v-if="connectLoading" class="animate-spin" />
+                Connect
+              </Button>
+            </div>
+            <div class="flex justify-between items-center mb-2">
+              <p>Check Notification</p>
+              <Button @click="check" :disabled="checkLoading">
+                <Loader2Icon v-if="checkLoading" class="animate-spin" />
+                Check
+              </Button>
+            </div>
+          </CardContent>
+          <CardFooter> </CardFooter>
+        </Card>
+      </TabsContent>
+      <TabsContent value="profile">
+        <Card>
+          <CardHeader>
+            <CardTitle> Profile Settings </CardTitle>
+          </CardHeader>
+          <CardContent class="space-y-2"> </CardContent>
+          <CardFooter> </CardFooter>
+        </Card>
+      </TabsContent>
+      <TabsContent value="payment">
+        <Card>
+          <CardHeader>
+            <CardTitle> Payment Settings </CardTitle>
+          </CardHeader>
+          <CardContent class="space-y-2"> </CardContent>
+          <CardFooter> </CardFooter>
+        </Card>
+      </TabsContent>
+    </Tabs>
   </Dashboard>
 </template>
 
@@ -31,6 +69,12 @@ export default {
   components: { BellIcon, Loader2Icon },
   data() {
     return {
+      selectTab: "notification",
+      tabs: [
+        { value: "notification", label: "Notification" },
+        { value: "profile", label: "Profile" },
+        { value: "payment", label: "Payment" },
+      ],
       connectLoading: false,
       checkLoading: false,
     };

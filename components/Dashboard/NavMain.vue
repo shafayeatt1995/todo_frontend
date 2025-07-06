@@ -63,6 +63,7 @@ import {
   Contact,
   DollarSign,
   LayoutPanelLeft,
+  MailCheck,
   MapPinned,
   Settings2,
   Users,
@@ -90,6 +91,11 @@ export default {
           to: { name: "dashboard-customer" },
         },
         {
+          title: "SMS",
+          icon: MailCheck,
+          to: { name: "dashboard-sms" },
+        },
+        {
           title: "User",
           icon: Users,
           to: { name: "dashboard-user" },
@@ -103,6 +109,11 @@ export default {
           title: "Sub Zone",
           icon: MapPinned,
           to: { name: "dashboard-sub-zone" },
+        },
+        {
+          title: "Purchase SMS",
+          icon: DollarSign,
+          to: { name: "dashboard-purchase" },
         },
         {
           title: "Settings",
