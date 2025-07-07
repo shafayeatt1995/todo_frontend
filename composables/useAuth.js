@@ -17,7 +17,8 @@ export const useAuth = () => {
   const login = async (user, t) => {
     try {
       const token = t || (await api.post("/auth/login", user))?.data?.token;
-      setCookie("sessionToken", token, { expires: 30 });
+      await removeCookie("sessionToken");
+      await setCookie("sessionToken", token, { expires: 30 });
 
       const { user } = await api.get("/user");
       setUser(user);
@@ -33,7 +34,8 @@ export const useAuth = () => {
     try {
       const data = await api.post("/auth/aniker-login", body);
       setUser(data.user);
-      setCookie("sessionToken", data.token, { expires: 7 });
+      await removeCookie("sessionToken");
+      await setCookie("sessionToken", data.token, { expires: 30 });
       return true;
     } catch (err) {
       console.error(err);
@@ -68,10 +70,10 @@ export const useAuth = () => {
   // Refresh token and update user & cookie
   const refreshToken = async () => {
     try {
-      const { user, token } = await api.get("/user/refresh-token");
-      setUser(user);
-      setCookie("sessionToken", token, { expires: 30 });
-      return { user, token };
+      const { token } = await api.get("/user/refresh-token");
+      await removeCookie("sessionToken");
+      await setCookie("sessionToken", token, { expires: 30 });
+      return { token };
     } catch (err) {
       console.error(err);
     }

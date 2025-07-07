@@ -1,6 +1,6 @@
 <template>
   <Head>
-    <Title>Login - Complain </Title>
+    <Title>Login - Smart ISP </Title>
   </Head>
   <div
     class="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10"
@@ -12,8 +12,8 @@
       <div class="flex flex-col gap-6">
         <Card>
           <CardHeader class="text-center">
-            <CardTitle class="text-xl"> Welcome back </CardTitle>
-            <CardDescription> Login with your id pass </CardDescription>
+            <CardTitle class="text-xl"> Welcome to Smart ISP </CardTitle>
+            <CardDescription> Login with your id and password </CardDescription>
           </CardHeader>
           <CardContent>
             <form @submit.prevent="login">
@@ -42,8 +42,8 @@
                     />
                     <ErrorMessage name="id" :error="errors" />
                   </div>
-                  <Button type="submit" class="w-full" :disabled="loading"
-                    ><Loader2Icon class="animate-spin" v-if="loading" /> Login
+                  <Button type="submit" class="w-full" :disabled="loading">
+                    <Loader2Icon class="animate-spin" v-if="loading" /> Login
                   </Button>
                 </div>
                 <div class="text-center text-sm">
@@ -70,7 +70,7 @@ import { Loader2Icon, ReceiptTextIcon } from "lucide-vue-next";
 
 export default {
   name: "IndexPage",
-  components: { ReceiptTextIcon },
+  components: { ReceiptTextIcon, Loader2Icon },
   data() {
     return {
       form: {
