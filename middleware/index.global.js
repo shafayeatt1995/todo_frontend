@@ -31,4 +31,19 @@ export default defineNuxtRouteMiddleware(async (to, _from) => {
   if (path.startsWith("/admin") && !authUser.value?.isAdmin) {
     return navigateTo("/dashboard");
   }
+  const isOnDashboard = path.startsWith("/dashboard");
+  const isOnPurchasePage = path.startsWith("/dashboard/purchase");
+  const isBusinessExpired =
+    authUser.value?.business?.exp &&
+    new Date(authUser.value.business.exp).getTime() < Date.now();
+
+  if (
+    isOnDashboard &&
+    !isOnPurchasePage &&
+    authUser.value &&
+    !authUser.value.isAdmin &&
+    isBusinessExpired
+  ) {
+    return navigateTo("/dashboard/purchase");
+  }
 });

@@ -3,6 +3,7 @@
     <Title>Dashboard</Title>
   </Head>
   <Dashboard>
+    <pre>{{ authUser }}</pre>
     <h1 class="text-2xl font-bold text-center mb-2">Our services</h1>
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
       <NuxtLink
@@ -20,18 +21,18 @@
         <p class="text-xl font-bold text-center">Customer</p>
       </NuxtLink>
       <NuxtLink
-        to="/dashboard/user"
-        class="border-rounded-md p-2 flex flex-col justify-center items-center bg-rose-50 border-rose-300 border aspect-square text-rose-500 rounded-xl"
-      >
-        <UserIcon :size="100" />
-        <p class="text-xl font-bold text-center">User</p>
-      </NuxtLink>
-      <NuxtLink
         to="/dashboard/sms"
         class="border-rounded-md p-2 flex flex-col justify-center items-center bg-indigo-50 border-indigo-300 border aspect-square text-indigo-500 rounded-xl"
       >
         <MailCheckIcon :size="100" />
         <p class="text-xl font-bold text-center">SMS</p>
+      </NuxtLink>
+      <NuxtLink
+        to="/dashboard/user"
+        class="border-rounded-md p-2 flex flex-col justify-center items-center bg-rose-50 border-rose-300 border aspect-square text-rose-500 rounded-xl"
+      >
+        <UserIcon :size="100" />
+        <p class="text-xl font-bold text-center">User</p>
       </NuxtLink>
       <NuxtLink
         to="/dashboard/zone"

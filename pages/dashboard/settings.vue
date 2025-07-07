@@ -79,6 +79,17 @@ export default {
       checkLoading: false,
     };
   },
+  watch: {
+    selectTab(val) {
+      console.log(val);
+      this.$router.push({
+        query: {
+          ...this.$route.query,
+          activeTab: val,
+        },
+      });
+    },
+  },
   methods: {
     async connect() {
       try {

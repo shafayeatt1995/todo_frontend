@@ -1,11 +1,14 @@
 export const useAuth = () => {
   const authUser = useState("user", () => null);
+  const loggedIn = computed(() => !!authUser.value);
+  const isAdmin = computed(() => !!authUser.value?.isAdmin);
+  const isExpired = computed(() => {
+    const exp = authUser.value?.business?.exp;
+    return exp ? new Date(exp).getTime() < Date.now() : true;
+  });
 
   const { api } = useApi();
   const { cookieParse, removeCookie, setCookie } = useUtils();
-
-  const loggedIn = computed(() => !!authUser.value);
-  const isAdmin = computed(() => !!authUser.value?.isAdmin);
 
   const setUser = (user) => {
     authUser.value = user;
@@ -83,5 +86,6 @@ export const useAuth = () => {
     logout,
     refreshToken,
     isAdmin,
+    isExpired,
   };
 };

@@ -36,9 +36,9 @@ export default defineNuxtConfig({
       ],
     },
     manifest: {
-      name: "Skyinfo Online",
-      short_name: "Skyinfo",
-      description: "Skyinfo Online",
+      name: "Smart ISP",
+      short_name: "Smart ISP",
+      description: "Smart ISP",
       theme_color: "#ffffff",
       background_color: "#ffffff",
       display: "standalone",
