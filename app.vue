@@ -1,5 +1,4 @@
 <template>
-  <p class="text-3xl text-center" @click="check">AMi anik</p>
   <NuxtPwaManifest />
   <NuxtLayout>
     <NuxtPage />

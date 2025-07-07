@@ -3,7 +3,6 @@
     <Title>Dashboard</Title>
   </Head>
   <Dashboard>
-    <pre>{{ authUser }}</pre>
     <h1 class="text-2xl font-bold text-center mb-2">Our services</h1>
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
       <NuxtLink
