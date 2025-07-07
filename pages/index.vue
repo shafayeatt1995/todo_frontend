@@ -48,8 +48,12 @@
                 </div>
                 <div class="text-center text-sm">
                   Don't have an account?
-                  <a href="#" class="underline underline-offset-4">
-                    Contact us
+                  <a
+                    href="https://wa.me/+8801728293635"
+                    target="_blank"
+                    class="underline underline-offset-4"
+                  >
+                    WhatsApp us
                   </a>
                 </div>
               </div>
