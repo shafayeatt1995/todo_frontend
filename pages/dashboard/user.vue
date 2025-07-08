@@ -5,7 +5,9 @@
   <Dashboard>
     <div class="w-full space-y-2">
       <div class="flex justify-between">
-        <h1 class="flex gap-2 items-center text-2xl"><UsersIcon /> Users</h1>
+        <h1 class="flex gap-2 items-center text-2xl font-bold">
+          <UsersIcon /> Users
+        </h1>
         <Button @click="modal = true"> <PlusIcon /> Add User </Button>
       </div>
       <div

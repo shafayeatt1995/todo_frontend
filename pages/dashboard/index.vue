@@ -49,7 +49,7 @@
       </NuxtLink>
       <NuxtLink
         to="/dashboard/purchase"
-        class="border-rounded-md p-2 flex flex-col justify-center items-center bg-green-50 border-green-300 border aspect-square text-green-500 rounded-xl"
+        class="border-rounded-md p-2 flex flex-col justify-center items-center bg-emerald-50 border-emerald-300 border aspect-square text-emerald-500 rounded-xl"
       >
         <DollarSignIcon :size="100" />
         <p class="text-xl font-bold text-center">Purchase SMS</p>

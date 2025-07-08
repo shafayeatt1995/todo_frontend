@@ -1,15 +1,12 @@
 <template>
   <Head>
-    <Title>Zone - Admin</Title>
+    <Title>Purchase History - Dashboard</Title>
   </Head>
   <Dashboard>
     <div class="w-full space-y-2">
-      <div class="flex justify-between">
-        <h1 class="flex gap-2 items-center text-2xl font-bold">
-          <MapPinnedIcon /> Zone
-        </h1>
-        <Button @click="modal = true"> <PlusIcon /> Add Zone </Button>
-      </div>
+      <h1 class="flex gap-2 items-center text-2xl font-bold">
+        <DollarSignIcon /> Purchase History
+      </h1>
       <div
         class="flex flex-wrap md:grid grid-cols-2 xl:flex gap-2 items-center justify-between"
       >
@@ -97,10 +94,55 @@
               <TableHead>
                 <div
                   class="flex gap-2 items-center cursor-pointer"
-                  @click="sort('name')"
+                  @click="sort('package')"
                 >
-                  <p>Name</p>
-                  <Sort :value="form.sort.name" />
+                  <p>Package</p>
+                  <Sort :value="form.sort.package" />
+                </div>
+              </TableHead>
+              <TableHead>
+                <div
+                  class="flex gap-2 items-center cursor-pointer"
+                  @click="sort('amount')"
+                >
+                  <p>Amount</p>
+                  <Sort :value="form.sort.amount" />
+                </div>
+              </TableHead>
+              <TableHead>
+                <div
+                  class="flex gap-2 items-center cursor-pointer"
+                  @click="sort('trxID')"
+                >
+                  <p>Transaction ID</p>
+                  <Sort :value="form.sort.trxID" />
+                </div>
+              </TableHead>
+              <TableHead>
+                <div
+                  class="flex gap-2 items-center cursor-pointer"
+                  @click="sort('payerNumber')"
+                >
+                  <p>Payment Number</p>
+                  <Sort :value="form.sort.payerNumber" />
+                </div>
+              </TableHead>
+              <TableHead>
+                <div
+                  class="flex gap-2 items-center cursor-pointer"
+                  @click="sort('sms')"
+                >
+                  <p>SMS count</p>
+                  <Sort :value="form.sort.sms" />
+                </div>
+              </TableHead>
+              <TableHead>
+                <div
+                  class="flex gap-2 items-center cursor-pointer"
+                  @click="sort('createdAt')"
+                >
+                  <p>Purchase Date</p>
+                  <Sort :value="form.sort.createdAt" />
                 </div>
               </TableHead>
             </TableRow>
@@ -109,39 +151,34 @@
             <TableRow v-for="(pack, i) in loading ? 10 : items" :key="i">
               <TableCell>
                 <Skeleton class="w-full h-5 rounded-full" v-if="loading" />
-                <span v-else>{{ pack.name }}</span>
+                <span v-else>{{ pack.package }}</span>
               </TableCell>
-              <TableCell class="w-14">
+              <TableCell>
                 <Skeleton class="w-full h-5 rounded-full" v-if="loading" />
-                <DropdownMenu v-else>
-                  <DropdownMenuTrigger as-child>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      class="hover:bg-transparent size-7"
-                    >
-                      <MoreHorizontalIcon />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent class="" align="end">
-                    <DropdownMenuItem @click="editZone(pack)">
-                      <SquarePenIcon />
-                      <span>Edit zone</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem @click="deleteZone(pack)" v-if="isOwner">
-                      <Trash2Icon />
-                      <span>Delete zone</span>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                <span v-else>{{ pack.amount }}</span>
+              </TableCell>
+              <TableCell>
+                <Skeleton class="w-full h-5 rounded-full" v-if="loading" />
+                <span v-else>{{ pack.trxID }}</span>
+              </TableCell>
+              <TableCell>
+                <Skeleton class="w-full h-5 rounded-full" v-if="loading" />
+                <span v-else>{{ pack.payerNumber }}</span>
+              </TableCell>
+              <TableCell>
+                <Skeleton class="w-full h-5 rounded-full" v-if="loading" />
+                <span v-else>{{ pack.sms }}</span>
+              </TableCell>
+              <TableCell>
+                <Skeleton class="w-full h-5 rounded-full" v-if="loading" />
+                <span v-else>{{ $date(pack.createdAt) }}</span>
               </TableCell>
             </TableRow>
-
             <TableRow v-if="!loading && items.length === 0">
               <TableCell :colspan="3" class="h-24 text-center">
                 <div class="flex flex-col items-center justify-center py-10">
                   <BookOpenIcon :size="50" />
-                  <p class="">No results found.</p>
+                  <p>No results found.</p>
                 </div>
               </TableCell>
             </TableRow>
@@ -149,128 +186,66 @@
         </Table>
       </div>
     </div>
-    <Dialog v-model:open="modal">
-      <DialogScrollContent>
-        <DialogHeader>
-          <DialogTitle>{{ editMode ? "Edit" : "Add" }} Zone</DialogTitle>
-        </DialogHeader>
-        <div class="space-y-3">
-          <div class="space-y-1">
-            <Label for="name"> Zone name </Label>
-            <Input id="name" v-model="inputForm.name" />
-            <ErrorMessage name="name" :error="errors" />
-          </div>
-        </div>
-        <DialogFooter>
-          <Button type="button" @click="submit" :disabled="submitLoading">
-            <Loader2Icon v-if="submitLoading" class="animate-spin" />
-            {{ editMode ? "Update" : "Add" }} zone
-          </Button>
-        </DialogFooter>
-      </DialogScrollContent>
-    </Dialog>
   </Dashboard>
 </template>
 
 <script>
 import {
-  MapPinnedIcon,
   BookOpenIcon,
   MoreHorizontalIcon,
-  Trash2Icon,
-  SquarePenIcon,
-  PlusIcon,
-  PauseIcon,
-  PlayIcon,
-  ChevronDownIcon,
-  ChevronUpIcon,
-  Loader2Icon,
   DollarSignIcon,
 } from "lucide-vue-next";
 
 export default {
-  name: "Zone",
+  name: "PurchaseHistory",
   components: {
-    ChevronDownIcon,
     BookOpenIcon,
     MoreHorizontalIcon,
-    SquarePenIcon,
-    PlusIcon,
-    PauseIcon,
-    PlayIcon,
-    MapPinnedIcon,
-    ChevronDownIcon,
-    ChevronUpIcon,
-    Loader2Icon,
-    Trash2Icon,
     DollarSignIcon,
   },
   data() {
     return {
       perPageOptions: [25, 50, 100],
-      searchByOptions: ["name"],
+      searchByOptions: ["trxID"],
       form: {
         page: 1,
         perPage: 25,
         keyword: "",
-        searchBy: "name",
+        searchBy: "trxID",
         sort: { _id: -1 },
       },
-      errors: {},
       items: [],
       total: 0,
       loading: true,
       init: false,
       debounceTimer: null,
-      selectedItems: [],
-      modal: false,
-      editMode: false,
-      inputForm: {
-        name: "",
-      },
-      submitLoading: false,
     };
   },
-  computed: {
-    isOwner() {
-      const { isOwner } = usePermission();
-      return isOwner.value;
-    },
-  },
   watch: {
-    "form.page"(val) {
+    "form.page"() {
       if (this.init) {
         this.updateRoute();
         this.fetchItems();
       }
     },
-    "form.perPage"(val) {
+    "form.perPage"() {
       if (this.init) {
         this.updateRoute();
         this.refetch();
       }
     },
-    "form.keyword"(val) {
+    "form.keyword"() {
       clearTimeout(this.debounceTimer);
       this.debounceTimer = setTimeout(() => {
         this.updateRoute();
         this.refetch();
       }, 500);
     },
-    "form.searchBy"(val) {
+    "form.searchBy"() {
       if (this.form.keyword) {
         this.updateRoute();
         this.refetch();
       }
-    },
-    modal(val) {
-      if (!val) this.reset();
-    },
-    items: {
-      handler() {
-        this.selectedItems = [];
-      },
-      deep: true,
     },
   },
   mounted() {
@@ -283,12 +258,11 @@ export default {
     async fetchItems() {
       try {
         this.loading = true;
-        this.selectedItems = [];
-        const { zones, total } = await this.$api.post(
-          `/dashboard/zone/fetch`,
+        const { purchases, total } = await this.$api.post(
+          `/dashboard/purchase`,
           this.form
         );
-        this.items = zones;
+        this.items = purchases;
         this.total = total;
       } catch (error) {
         console.error(error);
@@ -305,53 +279,11 @@ export default {
       this.form.sort[key] = this.form.sort[key] === 1 ? -1 : 1;
       this.fetchItems();
     },
-    async submit() {
-      try {
-        this.submitLoading = true;
-        if (this.editMode) {
-          await this.$api.post(`/dashboard/zone/edit`, this.inputForm);
-          this.fetchItems();
-        } else {
-          await this.$api.post(`/dashboard/zone/add`, this.inputForm);
-          this.refetch();
-        }
-        this.reset();
-        this.modal = false;
-      } catch (error) {
-        console.error(error);
-        if (error?.response?._data?.errors) {
-          this.errors = error.response._data.errors;
-        }
-      } finally {
-        this.submitLoading = false;
-      }
-    },
-    reset() {
-      this.inputForm = {
-        name: "",
-      };
-      this.errors = {};
-      this.editMode = false;
-    },
     refetch() {
       if (this.form.page == 1) {
         this.fetchItems();
       } else {
         this.form.page = 1;
-      }
-    },
-    editZone(item) {
-      this.inputForm = { ...item };
-      this.editMode = true;
-      this.modal = true;
-    },
-    async deleteZone(item) {
-      try {
-        if (!confirm(`Are you sure you want to delete this zone?`)) return;
-        await this.$api.post(`/dashboard/zone/delete`, { _id: item._id });
-        this.fetchItems();
-      } catch (error) {
-        console.error(error);
       }
     },
   },

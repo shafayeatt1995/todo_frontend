@@ -47,15 +47,6 @@
           <CardFooter> </CardFooter>
         </Card>
       </TabsContent>
-      <TabsContent value="payment">
-        <Card>
-          <CardHeader>
-            <CardTitle> Payment Settings </CardTitle>
-          </CardHeader>
-          <CardContent class="space-y-2"> </CardContent>
-          <CardFooter> </CardFooter>
-        </Card>
-      </TabsContent>
     </Tabs>
   </Dashboard>
 </template>
@@ -73,7 +64,6 @@ export default {
       tabs: [
         { value: "notification", label: "Notification" },
         { value: "profile", label: "Profile" },
-        { value: "payment", label: "Payment" },
       ],
       connectLoading: false,
       checkLoading: false,
@@ -81,7 +71,6 @@ export default {
   },
   watch: {
     selectTab(val) {
-      console.log(val);
       this.$router.push({
         query: {
           ...this.$route.query,

@@ -38,15 +38,9 @@ export default {
         const { getCookie, decode } = useUtils();
         const token = getCookie("sessionToken");
 
-        if (!token) {
-          console.log("No sessionToken found");
-          return;
-        }
+        if (!token) return;
         const parts = token.split(".");
-        if (parts.length !== 3) {
-          console.log("Invalid JWT format");
-          return;
-        }
+        if (parts.length !== 3) return;
 
         const payload = JSON.parse(decode(parts[1]));
         const exp = payload.exp;
@@ -55,14 +49,12 @@ export default {
         const diffMs = expMs - now;
         const diffDays = diffMs / (1000 * 60 * 60 * 24);
 
-        console.log("JWT expires in:", Math.round(diffDays), "days");
-
         if (diffDays <= 2) {
           const { refreshToken } = useAuth();
           await refreshToken();
         }
       } catch (e) {
-        console.log("Error parsing JWT:", e);
+        console.error("Error parsing JWT:", e);
       }
     },
   },

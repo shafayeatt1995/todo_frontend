@@ -5,7 +5,7 @@
   <Dashboard>
     <div class="w-full space-y-2">
       <div class="flex justify-between">
-        <h1 class="flex gap-2 items-center text-2xl">
+        <h1 class="flex gap-2 items-center text-2xl font-bold">
           <ContactIcon />Customer
         </h1>
         <Button @click="modal = true"> <PlusIcon /> Add Customer </Button>
@@ -19,9 +19,17 @@
           :key="i"
           class="py-2 flex justify-between items-center"
         >
-          <p class="cursor-pointer flex-1" @click="show(i)">
-            {{ item.id }} -> {{ item.name }}
-          </p>
+          <div
+            class="cursor-pointer flex-1 flex gap-2 items-center"
+            @click="show(i)"
+          >
+            <p>{{ item.id }}</p>
+            <p>-></p>
+            <div>
+              <p>{{ item.name }}</p>
+              <p>{{ item.phone }}</p>
+            </div>
+          </div>
           <DropdownMenu>
             <DropdownMenuTrigger as-child>
               <Button

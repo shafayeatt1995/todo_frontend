@@ -5,7 +5,7 @@
   <Dashboard>
     <div class="w-full space-y-2">
       <div class="flex justify-between">
-        <h1 class="flex gap-2 items-center text-2xl">
+        <h1 class="flex gap-2 items-center text-2xl font-bold">
           <MapPinnedIcon /> Sub Zone
         </h1>
         <Button @click="modal = true"> <PlusIcon /> Add Sub Zone </Button>

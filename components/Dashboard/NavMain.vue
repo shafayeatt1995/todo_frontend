@@ -116,6 +116,11 @@ export default {
           to: { name: "dashboard-purchase" },
         },
         {
+          title: "Purchase History",
+          icon: DollarSign,
+          to: { name: "dashboard-purchase-history" },
+        },
+        {
           title: "Settings",
           icon: Settings2,
           to: { name: "dashboard-settings" },

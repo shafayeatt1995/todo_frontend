@@ -688,7 +688,6 @@ export default {
       }
     },
     async editBusiness(business) {
-      console.log(business);
       this.inputForm = {
         ...business,
         exp: toCalendarDate(fromDate(new Date(business.exp))),
@@ -704,7 +703,6 @@ export default {
           business: this.items[i],
           type,
         });
-        console.log(business);
         this.userData.userType = type;
         this.userData.editUser = business;
         this.userData.selectUser =
