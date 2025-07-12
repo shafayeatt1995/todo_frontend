@@ -5,7 +5,7 @@
   <Admin>
     <div class="w-full space-y-2">
       <div class="flex justify-between">
-        <h1 class="flex gap-2 items-center text-2xl">
+        <h1 class="flex gap-2 items-center text-2xl font-semibold">
           <BriefcaseBusinessIcon /> Business
         </h1>
         <Button @click="modal = true"> <PlusIcon /> Add Business </Button>
@@ -144,6 +144,24 @@
               <TableHead>
                 <div
                   class="flex gap-2 items-center cursor-pointer"
+                  @click="sort('sellerIDs')"
+                >
+                  <p>Seller</p>
+                  <Sort :value="form.sort.sellerIDs" />
+                </div>
+              </TableHead>
+              <TableHead>
+                <div
+                  class="flex gap-2 items-center cursor-pointer"
+                  @click="sort('reSellerIDs')"
+                >
+                  <p>Re-Seller</p>
+                  <Sort :value="form.sort.reSellerIDs" />
+                </div>
+              </TableHead>
+              <TableHead>
+                <div
+                  class="flex gap-2 items-center cursor-pointer"
                   @click="sort('staffIDs')"
                 >
                   <p>Staff</p>
@@ -238,6 +256,14 @@
               </TableCell>
               <TableCell>
                 <Skeleton class="w-full h-5 rounded-full" v-if="loading" />
+                <span v-else>{{ business.sellerIDs.length }}</span>
+              </TableCell>
+              <TableCell>
+                <Skeleton class="w-full h-5 rounded-full" v-if="loading" />
+                <span v-else>{{ business.reSellerIDs.length }}</span>
+              </TableCell>
+              <TableCell>
+                <Skeleton class="w-full h-5 rounded-full" v-if="loading" />
                 <span v-else>{{ business.staffIDs.length }}</span>
               </TableCell>
               <TableCell>
@@ -267,11 +293,19 @@
                     </DropdownMenuItem>
                     <DropdownMenuItem @click="openUser('owner', i)">
                       <UserPlusIcon />
-                      <span>Add owner</span>
+                      <span>Manage owner</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem @click="openUser('seller', i)">
+                      <UserPlusIcon />
+                      <span>Manage seller</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem @click="openUser('reSeller', i)">
+                      <UserPlusIcon />
+                      <span>Manage re-seller</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem @click="openUser('staff', i)">
                       <UserPlusIcon />
-                      <span>Add staff</span>
+                      <span>Manage staff</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem @click="deleteBusiness(i)">
                       <Trash2Icon />
@@ -426,7 +460,7 @@
         <DialogFooter>
           <Button type="button" :disabled="submitLoading" @click="updateUser">
             <Loader2Icon v-if="submitLoading" class="animate-spin" />
-            Add {{ userData.userType }}
+            Update <span class="capitalize">{{ userData.userType }}</span>
           </Button>
         </DialogFooter>
       </DialogScrollContent>
@@ -706,7 +740,13 @@ export default {
         this.userData.userType = type;
         this.userData.editUser = business;
         this.userData.selectUser =
-          type === "owner" ? business.owners : business.staffs;
+          type === "owner"
+            ? business.owners
+            : type === "seller"
+            ? business.sellers
+            : type === "reSeller"
+            ? business.reSellers
+            : business.staffs;
       } catch (error) {
         console.error(error);
       } finally {

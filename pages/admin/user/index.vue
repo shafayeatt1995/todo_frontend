@@ -5,7 +5,9 @@
   <Admin>
     <div class="w-full space-y-2">
       <div class="flex justify-between">
-        <h1 class="flex gap-2 items-center text-2xl"><UsersIcon /> Users</h1>
+        <h1 class="flex gap-2 items-center text-2xl font-semibold">
+          <UsersIcon /> Users
+        </h1>
         <Button @click="modal = true"> <PlusIcon /> Add User </Button>
       </div>
       <div
@@ -317,8 +319,6 @@
               <SelectContent>
                 <SelectGroup>
                   <SelectItem value="admin">Admin</SelectItem>
-                  <SelectItem value="owner">Business Owner</SelectItem>
-                  <SelectItem value="staff">Staff</SelectItem>
                   <SelectItem value="user">User</SelectItem>
                 </SelectGroup>
               </SelectContent>

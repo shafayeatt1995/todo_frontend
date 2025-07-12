@@ -4,7 +4,7 @@
   </Head>
   <Dashboard>
     <div class="w-full space-y-2">
-      <h1 class="flex gap-2 items-center text-2xl font-bold">
+      <h1 class="flex gap-1 items-center text-2xl font-bold">
         <DollarSignIcon /> Purchase History
       </h1>
       <div
@@ -175,7 +175,7 @@
               </TableCell>
             </TableRow>
             <TableRow v-if="!loading && items.length === 0">
-              <TableCell :colspan="3" class="h-24 text-center">
+              <TableCell :colspan="6" class="h-24 text-center">
                 <div class="flex flex-col items-center justify-center py-10">
                   <BookOpenIcon :size="50" />
                   <p>No results found.</p>

@@ -24,7 +24,15 @@
       <template v-if="form.type === 'zone'">
         <div class="space-y-1">
           <Label for="zone">Select Zone</Label>
-          <Select v-model="form.zone" multiple>
+          <Select
+            v-model="form.zone"
+            multiple
+            @update:open="
+              (val) => {
+                if (!val) fetchSubZone();
+              }
+            "
+          >
             <SelectTrigger class="w-full">
               <SelectValue placeholder="Select a zone" />
             </SelectTrigger>
@@ -46,16 +54,20 @@
               <SelectValue placeholder="Select a sub zone" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All</SelectItem>
-              <SelectItem value="zone">Select Zone</SelectItem>
-              <SelectItem value="customer">Select Customer</SelectItem>
+              <SelectItem
+                :value="subZone._id"
+                v-for="subZone in subZones"
+                :key="subZone._id"
+              >
+                {{ subZone.name }}
+              </SelectItem>
             </SelectContent>
           </Select>
         </div>
       </template>
     </CardContent>
     <CardFooter class="flex justify-end">
-      <Button>Send Message</Button>
+      <Button @click="sendMessage">Send Message</Button>
     </CardFooter>
   </Card>
 </template>
@@ -68,10 +80,11 @@ export default {
       form: {
         message: "",
         type: "all",
-        zone: "",
-        subZone: "",
+        zone: [],
+        subZone: [],
       },
       zones: [],
+      subZones: [],
     };
   },
   watch: {
@@ -87,6 +100,26 @@ export default {
         const { zones } = await this.$api.get("/dashboard/sms/zone");
         this.zones = zones;
       } catch (err) {}
+    },
+    async fetchSubZone() {
+      try {
+        this.form.subZone = [];
+        const { subZones } = await this.$api.post("/dashboard/sms/sub-zone", {
+          zones: this.form.zone,
+        });
+        this.subZones = subZones;
+      } catch (err) {}
+    },
+    async sendMessage() {
+      try {
+        const { data } = await this.$api.post(
+          "/dashboard/sms/custom",
+          this.form
+        );
+        console.log(data);
+      } catch (err) {
+        console.error(err);
+      }
     },
   },
 };

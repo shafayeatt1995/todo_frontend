@@ -92,11 +92,6 @@ export default {
             },
           ],
         },
-        {
-          title: "Zone",
-          icon: MapPinned,
-          to: { name: "admin-zone" },
-        },
       ],
     };
   },
